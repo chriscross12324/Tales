@@ -34,6 +34,10 @@ dependencies:
   window_manager: ^0.3.7
   flutter_riverpod: ^2.4.9
   shared_preferences: ^2.2.2
+  flutter_svg: ^2.0.9
+  gap: ^3.0.1
+  file_picker: ^6.1.1
+  system_theme: ^2.3.1
 
 
   # The following adds the Cupertino Icons font to your application.
