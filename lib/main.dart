@@ -1,7 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'app_providers.dart' as app_providers;
+import 'app_themes.dart' as app_themes;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  ///Set Min Window Size
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(800, 600),
+    minimumSize: Size(600, 400),
+    center: true,
+    title: "Tales",
+    backgroundColor: Color(0xFF0C0C0C),
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
+  ///Initialize SharedPreferences
+  final sharedPrefs = await SharedPreferences.getInstance();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        app_providers.sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      ],
+      child: TalesApp(
+        windowManager: windowManager,
+      ),
+    ),
+  );
+}
+
+class TalesApp extends ConsumerWidget {
+  TalesApp({required this.windowManager, super.key});
+
+  WindowManager windowManager;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final theme = app_themes.theme(themeWatcher, ref);
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: theme.firstBackground,
+        body: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              const SizedBox(
+                height: double.infinity,
+                width: 250,
+              ),
+              Expanded(
+                child: CustomContainer(
+                  bodyColour: theme.secondBackground,
+                  borderRadius: 5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
