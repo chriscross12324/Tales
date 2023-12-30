@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Developer specified files here
+/assets/logos/logo_placeholder.png
