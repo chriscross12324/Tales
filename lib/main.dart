@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:tales/Pages/page_project.dart';
 import 'package:tales/Pages/page_starting.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -55,13 +56,15 @@ class TalesApp extends ConsumerWidget {
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
+    final layoutWatcher = ref.watch(app_providers.showProjectLayout);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: theme.firstBackground,
-        body: const Padding(
-          padding: EdgeInsets.all(8),
-          child: PageStarting()
+        body: Padding(
+          padding: const EdgeInsets.all(8),
+          child: layoutWatcher ? const PageProject() : const PageStarting(),
         ),
       ),
     );
