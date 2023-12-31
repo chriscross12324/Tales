@@ -6,8 +6,8 @@ import 'app_providers.dart' as app_providers;
 
 ///Light Theme
 //Body Colours
-var firstBackgroundLight = const Color(0xFFFFFFFF); //-32
-var secondBackgroundLight = const Color(0xFFF5F5F5); //-16
+var firstBackgroundLight = const Color(0xFFB9B2B2); //-320xFFBBBBBB
+var secondBackgroundLight = const Color(0xFFD3CCCC); //-160xFFD7D7D7
 var thirdBackgroundLight = const Color(0xFFFFFFFF); //-80xFFE1E1E1
 var thirdBackgroundLightAlt = const Color(0xFFEBEBEB); //0xFFCDCDCD
 
@@ -25,8 +25,8 @@ var fourthTextLight = const Color(0x66121212).withOpacity(0.40);
 ///Darker Theme
 //Body Colours
 var firstBackgroundDarker = const Color(0xFF0C0C0C);
-var secondBackgroundDarker = const Color(0xFF171717);
-var thirdBackgroundDarker = const Color(0xFF202020);
+var secondBackgroundDarker = const Color(0xFF1A1A1A);
+var thirdBackgroundDarker = const Color(0xFF2B2B2B);
 var thirdBackgroundDarkerAlt = const Color(0xFF272727);
 
 //Outline Colours
