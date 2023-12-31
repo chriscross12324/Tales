@@ -29,8 +29,13 @@ StateNotifierProvider<BoolProvider, bool>((ref) {
       .tryGetBool("settingIncreaseContrast", false));
 });
 
+final showProjectLayout = StateNotifierProvider<BoolProvider, bool>((ref) {
+  return BoolProvider(false);
+});
 
-
+final projectDirectoryPath = StateNotifierProvider<StringProvider, String>((ref) {
+  return StringProvider(ref.read(sharedPreferencesProvider).tryGetString("projectDirectoryPath", "NULL"));
+});
 
 extension on SharedPreferences {
   int tryGetInt(String key, int defaultVal) {

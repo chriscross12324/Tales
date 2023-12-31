@@ -8,25 +8,18 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-class DialogAction extends ConsumerWidget {
-  const DialogAction(
+class DialogMessage extends ConsumerWidget {
+  const DialogMessage(
     this.dialogTitle,
     this.dialogBody,
-    this.primaryButtonText,
-    this.secondaryButtonText,
-    this.primaryButtonFunction,
-    this.secondaryButtonFunction, {
+    this.buttonText, {
     super.key,
   });
 
   final String dialogTitle;
   final String dialogBody;
 
-  final String primaryButtonText;
-  final String secondaryButtonText;
-
-  final Function primaryButtonFunction;
-  final Function secondaryButtonFunction;
+  final String buttonText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,54 +78,24 @@ class DialogAction extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              ///Run Function
-                              secondaryButtonFunction();
-
-                              ///Close Dialog
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                            child: CustomContainer(
-                              height: 40,
-                              bodyColour: theme.thirdBackground,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  secondaryButtonText,
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Gap(app_constants.modulePadding),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              ///Close Dialog
-                              Navigator.of(context, rootNavigator: true).pop();
-
-                              ///Run Function
-                              primaryButtonFunction();
-                            },
-                            child: CustomContainer(
-                              height: 40,
-                              bodyColour: SystemTheme.accentColor.accent,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  primaryButtonText,
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        const Expanded(child: SizedBox()),
+                        GestureDetector(
+                          onTap: () {
+                            ///Close Dialog
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                          child: CustomContainer(
+                            height: 40,
+                            width: 150,
+                            bodyColour: SystemTheme.accentColor.accent,
+                            borderRadius: app_constants.borderRadiusM,
+                            child: Center(
+                              child: Text(
+                                buttonText,
+                                style: TextStyle(
+                                  color: theme.firstText,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
