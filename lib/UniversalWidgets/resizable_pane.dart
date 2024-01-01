@@ -20,7 +20,7 @@ class ResizablePane extends ConsumerStatefulWidget {
 }
 
 class _ResizablePaneState extends ConsumerState<ResizablePane> {
-  double leftPaneWidth = 200.0;
+  double leftPaneWidth = 250.0;
   double minPaneWidth = 200.0;
   double maxPaneWidth = 400.0;
 
@@ -86,8 +86,8 @@ class _ResizablePaneState extends ConsumerState<ResizablePane> {
                     color: Colors.transparent,
                     child: Center(
                       child: AnimatedContainer(
-                        height: isResizing || mouseHoveringDivider ? 100 : 40,
-                        width: isResizing || mouseHoveringDivider ? 3 : 2,
+                        height: 40,
+                        width: isResizing || mouseHoveringDivider ? 4 : 2,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(2),
                           color: isResizing ? theme.thirdText : theme.fourthText,

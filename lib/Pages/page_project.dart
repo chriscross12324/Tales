@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:tales/Dialogs/dialog_confirm.dart';
+import 'package:tales/Pages/page_starting.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:tales/UniversalWidgets/custom_single_child_scroll_view.dart';
 import 'package:tales/UniversalWidgets/resizable_pane.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -107,136 +110,7 @@ class PageProject extends ConsumerWidget {
           const Gap(app_constants.modulePadding),
           Expanded(
             child: ResizablePane(
-              leftWidget: CustomContainer(
-                height: double.infinity,
-                bodyColour: theme.secondBackground,
-                borderRadiusCustom: const [
-                  app_constants.borderRadiusM,
-                  app_constants.borderRadiusM,
-                  app_constants.borderRadiusS,
-                  app_constants.borderRadiusM,
-                ],
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(app_constants.borderRadiusS),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              CustomContainer(
-                                height: 40,
-                                bodyColour: theme.secondBackground,
-                                borderRadius: 5,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/icons/icon_add.svg",
-                                        color: theme.firstText,
-                                        height: 18,
-                                        width: 18,
-                                      ),
-                                      const Gap(8),
-                                      Text(
-                                        "New Project",
-                                        style: TextStyle(color: theme.secondText),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Gap(8),
-                              CustomContainer(
-                                height: 40,
-                                bodyColour: theme.secondBackground,
-                                borderRadius: 5,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/icons/icon_folder.svg",
-                                        color: theme.firstText,
-                                        height: 18,
-                                        width: 18,
-                                      ),
-                                      const Gap(8),
-                                      Text(
-                                        "Open",
-                                        style: TextStyle(color: theme.secondText),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Gap(app_constants.modulePadding),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            showStandardDialog(context, ref, const DialogSettings());
-                          },
-                          child: CustomContainer(
-                            height: 40,
-                            width: 40,
-                            bodyColour: Colors.transparent,
-                            borderRadius: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SvgPicture.asset(
-                                "assets/icons/icon_settings.svg",
-                                color: theme.secondText,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showStandardDialog(
-                              context,
-                              ref,
-                              DialogAction(
-                                "Exit Project",
-                                "Continuing will close this project and return you to the 'Welcome' screen.",
-                                "Close Project",
-                                "Cancel",
-                                () {
-                                  layoutReader.updateState(false);
-                                },
-                                () {},
-                              ),
-                            );
-                          },
-                          child: CustomContainer(
-                            height: 40,
-                            width: 40,
-                            bodyColour: Colors.transparent,
-                            borderRadius: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SvgPicture.asset(
-                                "assets/icons/icon_help.svg",
-                                color: theme.secondText,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              leftWidget: const NavigationPane(),
               rightWidget: CustomContainer(
                 height: double.infinity,
                 bodyColour: theme.secondBackground,
@@ -250,6 +124,111 @@ class PageProject extends ConsumerWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class NavigationPane extends ConsumerWidget {
+  const NavigationPane({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final theme = app_themes.theme(themeWatcher, ref);
+
+    return CustomContainer(
+      height: double.infinity,
+      bodyColour: theme.secondBackground,
+      borderRadiusCustom: const [
+        app_constants.borderRadiusM,
+        app_constants.borderRadiusM,
+        app_constants.borderRadiusS,
+        app_constants.borderRadiusM,
+      ],
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          children: [
+            CustomContainer(
+              height: 30,
+              bodyColour: theme.thirdBackground,
+              borderRadius: app_constants.borderRadiusS,
+              child: Stack(
+                children: [
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Tales",
+                            style: TextStyle(
+                              color: theme.firstText,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: " - Who We Are",
+                            style: TextStyle(
+                              color: theme.secondText,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        ///Close Project
+                        showStandardDialog(
+                          context,
+                          ref,
+                          DialogConfirm(
+                            "Exit Project",
+                            "You are about to close the project. Are you sure you want to continue?",
+                            "Back",
+                            () {
+                              ref
+                                  .watch(app_providers.showProjectLayout.notifier)
+                                  .updateState(false);
+                            },
+                            () {},
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 30,
+                        color: Colors.transparent,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            "assets/icons/icon_close.svg",
+                            height: 14,
+                            width: 14,
+                            colorFilter: ColorFilter.mode(
+                              theme.secondText,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const Expanded(
+              child: CustomSingleChildScrollView(
+                children: [],
+              ),
+            ),
+            const Gap(app_constants.modulePadding),
+            const SettingsHelp(),
+          ],
+        ),
       ),
     );
   }

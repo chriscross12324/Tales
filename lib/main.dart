@@ -21,7 +21,7 @@ Future<void> main() async {
   ///Set Min Window Size
   WindowOptions windowOptions = const WindowOptions(
     size: Size(800, 600),
-    minimumSize: Size(600, 400),
+    minimumSize: Size(700, 400),
     center: true,
     title: "Tales",
     backgroundColor: Color(0xFF0C0C0C),
