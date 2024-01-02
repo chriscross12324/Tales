@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-import 'custom_container.dart';
 
 class ResizablePane extends ConsumerStatefulWidget {
   const ResizablePane(

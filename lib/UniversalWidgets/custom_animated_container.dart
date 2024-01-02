@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
-import 'package:tales/app_constants.dart' as app_constants;
 
 class AnimatedCustomContainer extends ConsumerWidget {
   const AnimatedCustomContainer({

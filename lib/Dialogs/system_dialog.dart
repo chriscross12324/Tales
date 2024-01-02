@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
-import 'package:tales/app_constants.dart' as app_constants;
 
 void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) {
   final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
@@ -34,7 +33,7 @@ void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout
   );
 }
 
-Future<Object?> showAsyncDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) async {
+Future<void> showAsyncDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) async {
   final themeWatcher = ref.watch(app_providers.settingThemeProvider);
   final theme = app_themes.theme(themeWatcher, ref);
 

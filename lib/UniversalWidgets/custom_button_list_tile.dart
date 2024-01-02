@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_theme/system_theme.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-import '../Dialogs/dialog_message.dart';
-import '../Dialogs/system_dialog.dart';
-import '../app_provider_classes.dart';
 import 'custom_animated_container.dart';
 
 class CustomButtonListTile extends ConsumerWidget {

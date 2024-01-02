@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:tales/Dialogs/dialog_action.dart';
 import 'package:tales/Dialogs/dialog_help.dart';
 import 'package:tales/Dialogs/dialog_message.dart';
 import 'package:tales/Dialogs/dialog_new_project.dart';
@@ -17,7 +15,6 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-import '../Dialogs/dialog_confirm.dart';
 
 class PageStarting extends ConsumerWidget {
   const PageStarting({super.key});
@@ -160,9 +157,12 @@ class LeftPane extends ConsumerWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/icons/icon_add.svg",
-                    color: theme.firstText,
                     height: 18,
                     width: 18,
+                    colorFilter: ColorFilter.mode(
+                      theme.firstText,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   const Gap(8),
                   Text(
@@ -189,9 +189,12 @@ class LeftPane extends ConsumerWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/icons/icon_folder.svg",
-                    color: theme.firstText,
                     height: 18,
                     width: 18,
+                    colorFilter: ColorFilter.mode(
+                      theme.firstText,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   const Gap(8),
                   Text(

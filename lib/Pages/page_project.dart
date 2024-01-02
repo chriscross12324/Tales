@@ -12,8 +12,6 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-import '../Dialogs/dialog_action.dart';
-import '../Dialogs/dialog_settings.dart';
 import '../Dialogs/system_dialog.dart';
 
 class PageProject extends ConsumerWidget {
@@ -22,10 +20,7 @@ class PageProject extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
-    final themeReader = ref.watch(app_providers.settingThemeProvider.notifier);
     final theme = app_themes.theme(themeWatcher, ref);
-
-    final layoutReader = ref.watch(app_providers.showProjectLayout.notifier);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
