@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:tales/Dialogs/dialog_message.dart';
+import 'package:tales/Dialogs/system_dialog.dart';
 import 'package:tales/UniversalWidgets/custom_animated_container.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 import 'package:tales/UniversalWidgets/custom_text_form_field_container.dart';
@@ -17,6 +21,10 @@ class DialogNewProject extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
+
+    final textControllerProjectName = TextEditingController();
+    final textControllerDescription = TextEditingController();
+    final textControllerCopyrightHolder = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -41,24 +49,34 @@ class DialogNewProject extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(20),
-                            Text(
-                              "Project Name",
-                              style: TextStyle(
-                                color: theme.firstText,
-                                fontSize: 20,
-                                fontFamily: "Rounded",
-                                fontWeight: FontWeight.w700,
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Project Name",
+                                    style: TextStyle(
+                                      color: theme.firstText,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const TextSpan(
+                                    text: " *",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                             const Gap(5),
                             CustomTextFormField(
                               borderRadius: app_constants.borderRadiusM,
                               bodyColour: theme.fourthBackground,
                               borderColour: theme.fourthOutline,
-                              textEditingController: TextEditingController(),
+                              textEditingController: textControllerProjectName,
                               textInputAction: TextInputAction.next,
                             ),
                             const Gap(5),
@@ -91,12 +109,12 @@ class DialogNewProject extends ConsumerWidget {
                               borderRadius: app_constants.borderRadiusM,
                               bodyColour: theme.fourthBackground,
                               borderColour: theme.fourthOutline,
-                              textEditingController: TextEditingController(),
+                              textEditingController: textControllerDescription,
                               textInputAction: TextInputAction.next,
                             ),
                             const Gap(5),
                             Text(
-                              "Here is where you give a brief description of yur project. No need to go into much detail, that’s what will happen later!",
+                              "Here is where you give a brief description of your project. No need to go into much detail, that’s what will happen later!",
                               style: TextStyle(
                                 color: theme.thirdText,
                                 fontSize: 12,
@@ -123,7 +141,8 @@ class DialogNewProject extends ConsumerWidget {
                               borderRadius: app_constants.borderRadiusM,
                               bodyColour: theme.fourthBackground,
                               borderColour: theme.fourthOutline,
-                              textEditingController: TextEditingController(),
+                              textEditingController:
+                                  textControllerCopyrightHolder,
                               textInputAction: TextInputAction.next,
                             ),
                             const Gap(5),
@@ -182,9 +201,58 @@ class DialogNewProject extends ConsumerWidget {
                           ),
                           const Gap(app_constants.modulePadding),
                           GestureDetector(
-                            onTap: () {
-                              ///Close Dialog
-                              Navigator.of(context, rootNavigator: true).pop();
+                            onTap: () async {
+                              ///Create Project
+                              if (textControllerProjectName
+                                  .value.text.isEmpty) {
+                                ///Show Error
+                                showStandardDialog(
+                                  context,
+                                  ref,
+                                  const DialogMessage(
+                                    "Missing Info",
+                                    "The 'Project Name' text field is empty. You need to enter text to create a new project.",
+                                    "Ok",
+                                  ),
+                                );
+                              } else {
+                                ///Show Creation Dialog
+                                showStandardDialog(
+                                  context,
+                                  ref,
+                                  const DialogMessage(
+                                    "Creating",
+                                    "Your project is being created, please wait.",
+                                    "",
+                                  ),
+                                );
+                                if (await createProject(
+                                    ref.watch(
+                                        app_providers.projectDirectoryPath),
+                                    textControllerProjectName.value.text)) {
+                                  ///Success
+                                  showStandardDialog(
+                                    context,
+                                    ref,
+                                    const DialogMessage(
+                                      "Project Created",
+                                      "Your project has successfully been created!",
+                                      "",
+                                    ),
+                                  );
+                                } else {
+                                  ///Error
+                                  showStandardDialog(
+                                    context,
+                                    ref,
+                                    const DialogMessage(
+                                      "Failed",
+                                      "Tales encountered an error and you project could not be successfully created!",
+                                      "",
+                                    ),
+                                  );
+                                }
+                              }
                             },
                             child: CustomContainer(
                               height: 40,
@@ -214,5 +282,41 @@ class DialogNewProject extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+Future<bool> createProject(String projectLocation, String projectName) async {
+  ///Create Project Folder
+  if (!(await createFolder(projectLocation, projectName))) {
+    return false;
+  }
+
+  ///Create Project Sub-Folders
+  List<String> subfolderNames = [
+    "Chapters",
+    "Characters",
+    "Locations",
+    "Research",
+    "Recycle Bin"
+  ];
+  for (String subfolderName in subfolderNames) {
+    if (!(await createFolder("$projectLocation/$projectName", subfolderName))) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+Future<bool> createFolder(String folderPath, String folderName) async {
+  ///Create Folder
+  final projectFolder = Directory("$folderPath/$folderName");
+
+  ///Create Folder if it doesn't exist
+  if (!(await projectFolder.exists())) {
+    await projectFolder.create(recursive: true);
+    return true;
+  } else {
+    return false;
   }
 }
