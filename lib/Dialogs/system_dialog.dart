@@ -6,6 +6,7 @@ import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
 void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) {
+  final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
   final themeWatcher = ref.watch(app_providers.settingThemeProvider);
   final theme = app_themes.theme(themeWatcher, ref);
 
@@ -28,7 +29,7 @@ void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout
         ),
       );
     },
-    transitionDuration: const Duration(milliseconds: 250),
+    transitionDuration: Duration(milliseconds: disableAnimationsWatcher ? 0 : 250),
     barrierColor: theme.firstBackground.withOpacity(themeWatcher ? 0.75 : 0.5),
   );
 }

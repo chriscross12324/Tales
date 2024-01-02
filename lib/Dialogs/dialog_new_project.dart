@@ -137,7 +137,7 @@ class DialogNewProject extends ConsumerWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const Gap(20),
+                            const Gap(30),
                           ],
                         ),
                       ),

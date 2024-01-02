@@ -7,8 +7,6 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-import '../Dialogs/dialog_message.dart';
-import '../Dialogs/system_dialog.dart';
 import '../app_provider_classes.dart';
 import 'custom_animated_container.dart';
 
@@ -88,7 +86,6 @@ class CustomSwitchListTile extends ConsumerWidget {
               bodyColour: theme.thirdBackground,
               borderRadius: app_constants.borderRadiusM,
               borderRadiusSubtraction: 0,
-              duration: const Duration(milliseconds: 150),
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Row(

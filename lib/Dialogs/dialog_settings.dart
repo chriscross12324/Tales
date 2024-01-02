@@ -9,6 +9,7 @@ import 'package:tales/Dialogs/system_dialog.dart';
 import 'package:tales/UniversalWidgets/custom_animated_container.dart';
 import 'package:tales/UniversalWidgets/custom_button_list_tile.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:tales/UniversalWidgets/custom_list_separator.dart';
 import 'package:tales/UniversalWidgets/custom_switch_list_tile.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -64,18 +65,30 @@ class DialogSettings extends ConsumerWidget {
                               borderRadius: app_constants.borderRadiusM,
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
-                                child: CustomSwitchListTile(
-                                  title: 'Dark Theme',
-                                  message:
-                                      'Gives the application a darker appearance to make it easier on the eyes in dark environments.',
-                                  sharedPreferencesKey: "settingDarkTheme",
-                                  boolProvider: app_providers.settingThemeProvider,
+                                child: Column(
+                                  children: [
+                                    CustomSwitchListTile(
+                                      title: 'Dark Theme',
+                                      message:
+                                          'Gives the application a darker appearance to make it easier on the eyes in dark environments.',
+                                      sharedPreferencesKey: "settingDarkTheme",
+                                      boolProvider: app_providers.settingThemeProvider,
+                                    ),
+                                    const CustomListSeparator(),
+                                    CustomSwitchListTile(
+                                      title: 'Disable Animations',
+                                      message:
+                                      'Disables most animations that occur to speed up actions and remove possible distractions.',
+                                      sharedPreferencesKey: "settingDisableAnimations",
+                                      boolProvider: app_providers.settingDisableAnimationsProvider,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                             const Gap(25),
                             Text(
-                              "Storage",
+                              "Experience",
                               style: TextStyle(
                                 color: theme.firstText,
                                 fontSize: 24,
@@ -90,57 +103,68 @@ class DialogSettings extends ConsumerWidget {
                               borderRadius: app_constants.borderRadiusM,
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
-                                child: CustomButtonListTile(
-                                  title: "Project Directory",
-                                  message: 'Projects will be stored in:\n$projectDirectoryWatcher',
-                                  buttonText: "Select Directory",
-                                  buttonFunction: () async {
-                                    ///Prompt user to select Directory
-                                    FilePicker.platform
-                                        .getDirectoryPath()
-                                        .then((selectedPath) {
-                                      if (selectedPath == null) {
-                                        showStandardDialog(
-                                          context,
-                                          ref,
-                                          const DialogMessage(
-                                            "Action Cancelled",
-                                            "The dialog was dismissed before a directory was selected. No changes are made.",
-                                            "Ok",
-                                          ),
-                                        );
-                                      } else {
-                                        checkProjectDirectory(
-                                                context, ref, selectedPath)
-                                            .then(
-                                          (value) {
-                                            debugPrint("User Continuing");
+                                child: Column(
+                                  children: [
+                                    CustomSwitchListTile(
+                                      title: "Autocorrect",
+                                      message: 'This feature will automatically suggest or correct misspelled words or typos. Names and uncommon words may be incorrectly changed.',
+                                      boolProvider: app_providers.settingAutocorrect,
+                                      sharedPreferencesKey: "settingAutocorrect",
+                                    ),
+                                    const CustomListSeparator(),
+                                    CustomButtonListTile(
+                                      title: "Project Directory",
+                                      message: 'Projects will be stored in:\n$projectDirectoryWatcher',
+                                      buttonText: "Select Directory",
+                                      buttonFunction: () async {
+                                        ///Prompt user to select Directory
+                                        FilePicker.platform
+                                            .getDirectoryPath()
+                                            .then((selectedPath) {
+                                          if (selectedPath == null) {
                                             showStandardDialog(
                                               context,
                                               ref,
-                                              DialogAction(
-                                                "Migrate Projects",
-                                                "A new Project Directory has been selected. Continuing will move already existing projects to the new directory.",
-                                                "Migrate",
-                                                "Cancel",
-                                                () {
-                                                  moveProjects(ref, selectedPath);
-                                                },
-                                                () {},
+                                              const DialogMessage(
+                                                "Action Cancelled",
+                                                "The dialog was dismissed before a directory was selected. No changes are made.",
+                                                "Ok",
                                               ),
                                             );
-                                          },
-                                        );
-                                      }
-                                    });
+                                          } else {
+                                            checkProjectDirectory(
+                                                    context, ref, selectedPath)
+                                                .then(
+                                              (value) {
+                                                debugPrint("User Continuing");
+                                                showStandardDialog(
+                                                  context,
+                                                  ref,
+                                                  DialogAction(
+                                                    "Migrate Projects",
+                                                    "A new Project Directory has been selected. Continuing will move already existing projects to the new directory.",
+                                                    "Migrate",
+                                                    "Cancel",
+                                                    () {
+                                                      moveProjects(ref, selectedPath);
+                                                    },
+                                                    () {},
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          }
+                                        });
 
-                                    ///Check if action was cancelled
-                                  },
-                                  disabled: projectLayoutWatcher,
+                                        ///Check if action was cancelled
+                                      },
+                                      disabled: projectLayoutWatcher,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            const Gap(25),
+                            const Gap(30),
                           ],
                         ),
                       ),

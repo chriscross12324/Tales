@@ -18,19 +18,24 @@ final settingThemeProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
       .tryGetBool("settingDarkTheme", true));
 });
 
+final settingDisableAnimationsProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
+  return BoolProvider(ref
+      .read(sharedPreferencesProvider)
+      .tryGetBool("settingDisableAnimations", false));
+});
+
 
 ///App Settings
 ///
 /// Experience
-final settingIncreaseContrastProvider =
-StateNotifierProvider<BoolProvider, bool>((ref) {
-  return BoolProvider(ref
-      .read(sharedPreferencesProvider)
-      .tryGetBool("settingIncreaseContrast", false));
-});
-
 final showProjectLayout = StateNotifierProvider<BoolProvider, bool>((ref) {
   return BoolProvider(false);
+});
+
+final settingAutocorrect = StateNotifierProvider<BoolProvider, bool>((ref) {
+  return BoolProvider(ref
+      .read(sharedPreferencesProvider)
+      .tryGetBool("settingAutocorrect", true));
 });
 
 final projectDirectoryPath = StateNotifierProvider<StringProvider, String>((ref) {

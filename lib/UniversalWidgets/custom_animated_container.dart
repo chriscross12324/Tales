@@ -53,12 +53,14 @@ class AnimatedCustomContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
+
     return AnimatedContainer(
         height: height,
         width: width,
         constraints: constraints,
         alignment: alignment,
-        duration: duration,
+        duration: disableAnimationsWatcher ? Duration.zero : duration,
         curve: curve ?? Curves.fastOutSlowIn,
         decoration: BoxDecoration(
           color: bodyColour,

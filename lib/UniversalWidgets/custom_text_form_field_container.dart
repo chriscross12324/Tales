@@ -54,6 +54,7 @@ class CustomTextFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
@@ -91,6 +92,7 @@ class CustomTextFormField extends ConsumerWidget {
             ),
             cursorColor: theme.firstText,
             cursorWidth: 2,
+            cursorOpacityAnimates: !disableAnimationsWatcher,
             textAlignVertical: TextAlignVertical.center,
           ),
         ),
