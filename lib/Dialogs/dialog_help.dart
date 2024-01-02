@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:tales/UniversalWidgets/custom_animated_container.dart';
-import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:tales/UniversalWidgets/custom_buttons.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
@@ -63,21 +62,9 @@ class DialogHelp extends ConsumerWidget {
                               ///Close Dialog
                               Navigator.of(context, rootNavigator: true).pop();
                             },
-                            child: CustomContainer(
-                              height: 40,
-                              width: 150,
-                              bodyColour: SystemTheme.accentColor.accent,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  "Close",
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            child: ButtonDialogPrimary(
+                              buttonText: 'Close',
+                              buttonWidth: 150,
                             ),
                           ),
                         ],

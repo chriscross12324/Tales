@@ -5,6 +5,8 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
+import 'custom_animated_container.dart';
+
 
 class ResizablePane extends ConsumerStatefulWidget {
   const ResizablePane(
@@ -83,13 +85,11 @@ class _ResizablePaneState extends ConsumerState<ResizablePane> {
                     width: app_constants.modulePadding,
                     color: Colors.transparent,
                     child: Center(
-                      child: AnimatedContainer(
+                      child: AnimatedCustomContainer(
                         height: 40,
                         width: isResizing || mouseHoveringDivider ? 4 : 2,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          color: isResizing ? theme.thirdText : theme.fourthText,
-                        ),
+                        bodyColour: isResizing ? theme.thirdText : theme.fourthText,
+                        borderRadius: 2,
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.fastOutSlowIn,
                       ),

@@ -34,6 +34,7 @@ void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout
 }
 
 Future<void> showAsyncDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) async {
+  final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
   final themeWatcher = ref.watch(app_providers.settingThemeProvider);
   final theme = app_themes.theme(themeWatcher, ref);
 
@@ -56,7 +57,7 @@ Future<void> showAsyncDialog(BuildContext context, WidgetRef ref, Widget dialogL
         ),
       );
     },
-    transitionDuration: const Duration(milliseconds: 250),
+    transitionDuration: Duration(milliseconds: disableAnimationsWatcher ? 0 : 250),
     barrierColor: theme.firstBackground.withOpacity(themeWatcher ? 0.75 : 0.5),
   );
 }

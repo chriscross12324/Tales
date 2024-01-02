@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:system_theme/system_theme.dart';
+import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -94,20 +94,8 @@ class DialogAction extends ConsumerWidget {
                               ///Close Dialog
                               Navigator.of(context, rootNavigator: true).pop();
                             },
-                            child: CustomContainer(
-                              height: 40,
-                              bodyColour: theme.thirdBackground,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  secondaryButtonText,
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
+                            child: ButtonDialogSecondary(
+                              buttonText: secondaryButtonText,
                             ),
                           ),
                         ),
@@ -121,20 +109,8 @@ class DialogAction extends ConsumerWidget {
                               ///Run Function
                               primaryButtonFunction();
                             },
-                            child: CustomContainer(
-                              height: 40,
-                              bodyColour: SystemTheme.accentColor.accent,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  primaryButtonText,
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            child: ButtonDialogPrimary(
+                              buttonText: primaryButtonText,
                             ),
                           ),
                         ),

@@ -105,7 +105,7 @@ class CustomSwitchListTile extends ConsumerWidget {
                         width: !boolWatcher ? 40 : 31,
                         bodyColour: boolWatcher
                             ? theme.fourthBackground.withOpacity(1)
-                            : SystemTheme.accentColor.accent,
+                            : SystemTheme.accentColor.dark,
                         borderRadiusCustom: const [
                           app_constants.borderRadiusM,
                           app_constants.borderRadiusS,
@@ -116,7 +116,7 @@ class CustomSwitchListTile extends ConsumerWidget {
                         duration: const Duration(milliseconds: 150),
                         child: Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(7),
                             child: SvgPicture.asset(
                               "assets/icons/icon_close.svg",
                               colorFilter: ColorFilter.mode(
@@ -155,7 +155,7 @@ class CustomSwitchListTile extends ConsumerWidget {
                         duration: const Duration(milliseconds: 150),
                         child: Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(7),
                             child: SvgPicture.asset(
                               "assets/icons/icon_check.svg",
                               colorFilter: ColorFilter.mode(

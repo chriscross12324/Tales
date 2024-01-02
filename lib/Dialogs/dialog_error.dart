@@ -1,25 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-class DialogMessage extends ConsumerWidget {
-  const DialogMessage(
-    this.dialogTitle,
-    this.dialogBody,
-    this.buttonText, {
+import '../UniversalWidgets/custom_buttons.dart';
+
+class DialogError extends ConsumerWidget {
+  DialogError(
+    this.errorMessage, {
     super.key,
   });
 
-  final String dialogTitle;
-  final String dialogBody;
-
-  final String buttonText;
+  final String errorMessage;
+  final ValueNotifier<String> _buttonCopyText = ValueNotifier("Copy Message");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,7 +45,7 @@ class DialogMessage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dialogTitle,
+                        "Error",
                         style: TextStyle(
                           color: theme.firstText,
                           fontSize: 28,
@@ -54,7 +54,7 @@ class DialogMessage extends ConsumerWidget {
                       ),
                       const Gap(4),
                       Text(
-                        dialogBody,
+                        "An error occurred, to continue Press & Hold the 'Continue' button below.\n\nHere is the error message returned:",
                         style: TextStyle(
                           color: theme.secondText,
                           fontSize: 14,
@@ -78,13 +78,34 @@ class DialogMessage extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        const Expanded(child: SizedBox()),
-                        GestureDetector(
-                          onTap: () {
-                            ///Close Dialog
-                            Navigator.of(context, rootNavigator: true).pop();
-                          },
-                          child: ButtonDialogPrimary(buttonText: 'Ok', buttonWidth: 150,),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              ///Run Function
+                              Clipboard.setData(ClipboardData(text: errorMessage));
+
+                              ///Update Button Text
+                              _buttonCopyText.value = "Copied";
+                            },
+                            child: ValueListenableBuilder(
+                              valueListenable: _buttonCopyText,
+                              builder: (BuildContext context, String buttonText, Widget? child) {
+                                return ButtonDialogSecondary(
+                                  buttonText: buttonText,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const Gap(app_constants.modulePadding),
+                        Expanded(
+                          child: ButtonPressHold(
+                            buttonText: "Continue",
+                            buttonFunction: () {
+                              ///Close Dialog
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                          ),
                         ),
                       ],
                     ),

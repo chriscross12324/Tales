@@ -77,7 +77,7 @@ class CustomButtonListTile extends ConsumerWidget {
                 bodyColour: theme.thirdBackground,
                 borderRadius: app_constants.borderRadiusM,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Center(
                     child: Text(
                       buttonText,
