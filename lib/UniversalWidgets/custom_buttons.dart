@@ -311,6 +311,7 @@ class ButtonIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
@@ -363,7 +364,7 @@ class ButtonIcon extends ConsumerWidget {
                   duration: const Duration(milliseconds: 250),
                   child: AnimatedScale(
                     scale: pressed ? 0.85 : 1.0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: Duration(milliseconds: disableAnimationsWatcher ? 0 : 150),
                     curve: Curves.fastOutSlowIn,
                     child: child,
                   ),

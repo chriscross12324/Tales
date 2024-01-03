@@ -22,6 +22,7 @@ class PageStarting extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final layoutReader = ref.watch(app_providers.showProjectLayout.notifier);
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
@@ -52,6 +53,38 @@ class PageStarting extends ConsumerWidget {
             child: CustomContainer(
               bodyColour: theme.secondBackground,
               borderRadius: app_constants.borderRadiusS,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        layoutReader.updateState(true);
+                      },
+                      child: Text(
+                        "Empty",
+                        style: TextStyle(
+                            color: theme.thirdText, fontSize: 38, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const Gap(10),
+                    Text(
+                      "Looks like you don't have any\nprojects yet.",
+                      style: TextStyle(
+                          color: theme.fourthText, fontSize: 24),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Gap(20),
+                    Text(
+                      listProjectsInDirectory(ref.watch(app_providers.projectDirectoryPath)).toString(),
+                      style: TextStyle(
+                          color: theme.fourthText.withOpacity(0.25), fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -65,14 +98,13 @@ class LeftPane extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final layoutReader = ref.watch(app_providers.showProjectLayout.notifier);
     final themeWatcher = ref.watch(app_providers.settingThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Column(
       children: [
         CustomContainer(
-          height: 250,
+          height: 225,
           width: double.infinity,
           bodyColour: theme.secondBackground,
           borderRadius: 5,
@@ -106,49 +138,8 @@ class LeftPane extends ConsumerWidget {
         GestureDetector(
           onTap: () {
             showStandardDialog(context, ref, const DialogNewProject());
-            /*String? selectedDirectory =
-            await FilePicker.platform.getDirectoryPath();
-            if (selectedDirectory == null) {
-              showStandardDialog(
-                context,
-                ref,
-                DialogMessage(
-                    "Action Cancelled",
-                    "The dialog was dismissed before a location was selected. Projects won't be able to be created.",
-                    "Ok"),
-              );
-            } else {
-              if (selectedDirectory
-                  .toLowerCase()
-                  .trim()
-                  .contains(("containers/com.simple.tales"))) {
-                await directoryWarning(context, ref);
-              }
-              createProject(selectedDirectory, "Who We Are")
-                  .then((value) {
-                if (value) {
-                  showStandardDialog(
-                    context,
-                    ref,
-                    DialogMessage(
-                        "Project Created",
-                        "The project 'Who We Are' has successfully been created in $selectedDirectory!",
-                        "Ok"),
-                  );
-                } else {
-                  showStandardDialog(
-                    context,
-                    ref,
-                    DialogMessage(
-                        "Project Already Exists",
-                        "The project specified already exists in that location, please enter a different name.",
-                        "Ok"),
-                  );
-                }
-              });
-            }*/
           },
-          child: CustomContainer(
+          child: ButtonDialogSecondary(buttonText: 'New Project',)/*CustomContainer(
             height: 40,
             bodyColour: theme.secondBackground,
             borderRadius: 5,
@@ -173,8 +164,8 @@ class LeftPane extends ConsumerWidget {
                 ],
               ),
             ),
-          ),
-        ),
+          ),*/
+        ),/*
         const Gap(8),
         GestureDetector(
           onTap: () {
@@ -206,7 +197,7 @@ class LeftPane extends ConsumerWidget {
               ),
             ),
           ),
-        ),
+        ),*/
       ],
     );
   }
@@ -264,55 +255,17 @@ class SettingsHelp extends ConsumerWidget {
   }
 }
 
-void createFile(String path) async {
-  final file = File("$path/Tales.txt");
-  await file.writeAsString("Test");
-}
+List<String> listProjectsInDirectory(String path) {
+  final parentDirectory = Directory(path);
+  final childDirectories =  parentDirectory.listSync();
 
-Future<bool> createProject(String projectLocation, String projectName) async {
-  ///Create Project Folder
-  if (!(await createFolder(projectLocation, projectName))) {
-    return false;
-  }
+  List<String> folderNames = [];
 
-  ///Create Project Sub-Folders
-  List<String> subfolderNames = [
-    "Chapters",
-    "Characters",
-    "Locations",
-    "Research",
-    "Recycle Bin"
-  ];
-  for (String subfolderName in subfolderNames) {
-    if (!(await createFolder("$projectLocation/$projectName", subfolderName))) {
-      return false;
+  for (var entity in childDirectories) {
+    if (entity is Directory) {
+      folderNames.add(entity.path);
     }
   }
 
-  return true;
-}
-
-Future<bool> createFolder(String folderPath, String folderName) async {
-  ///Create Folder
-  final projectFolder = Directory("$folderPath/$folderName");
-
-  ///Create Folder if it doesn't exist
-  if (!(await projectFolder.exists())) {
-    await projectFolder.create(recursive: true);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-Future<void> directoryWarning(BuildContext context, WidgetRef ref) async {
-  showStandardDialog(
-    context,
-    ref,
-    const DialogMessage(
-      "Warning",
-      "The directory you selected in contained within Tales. All projects will be removed if Tales is ever uninstalled.",
-      "I understand",
-    ),
-  );
+  return folderNames;
 }
