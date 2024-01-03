@@ -2,7 +2,7 @@
 ///The version of the generated .tale files.
 ///Used to decide if files need to be updated to support new features.
 ///----------------------
-const fileVersion = "0.1.0";
+const projectVersion = "0.1.0";
 
 ///Project Files Directory Name
 ///The name of the root folder that will hold all Tales projects.

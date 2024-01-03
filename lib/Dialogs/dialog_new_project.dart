@@ -1,16 +1,21 @@
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:tales/Dialogs/dialog_action.dart';
+import 'package:tales/Dialogs/dialog_error.dart';
 import 'package:tales/Dialogs/dialog_message.dart';
+import 'package:tales/Dialogs/dialog_settings.dart';
 import 'package:tales/Dialogs/system_dialog.dart';
 import 'package:tales/UniversalWidgets/custom_animated_container.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 import 'package:tales/UniversalWidgets/custom_text_form_field_container.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
+import 'package:tales/app_templates.dart';
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
@@ -141,8 +146,7 @@ class DialogNewProject extends ConsumerWidget {
                               borderRadius: app_constants.borderRadiusM,
                               bodyColour: theme.fourthBackground,
                               borderColour: theme.fourthOutline,
-                              textEditingController:
-                                  textControllerCopyrightHolder,
+                              textEditingController: textControllerCopyrightHolder,
                               textInputAction: TextInputAction.next,
                             ),
                             const Gap(5),
@@ -202,57 +206,13 @@ class DialogNewProject extends ConsumerWidget {
                           const Gap(app_constants.modulePadding),
                           GestureDetector(
                             onTap: () async {
-                              ///Create Project
-                              if (textControllerProjectName
-                                  .value.text.isEmpty) {
-                                ///Show Error
-                                showStandardDialog(
-                                  context,
-                                  ref,
-                                  const DialogMessage(
-                                    "Missing Info",
-                                    "The 'Project Name' text field is empty. You need to enter text to create a new project.",
-                                    "Ok",
-                                  ),
-                                );
-                              } else {
-                                ///Show Creation Dialog
-                                showStandardDialog(
-                                  context,
-                                  ref,
-                                  const DialogMessage(
-                                    "Creating",
-                                    "Your project is being created, please wait.",
-                                    "",
-                                  ),
-                                );
-                                if (await createProject(
-                                    ref.watch(
-                                        app_providers.projectDirectoryPath),
-                                    textControllerProjectName.value.text)) {
-                                  ///Success
-                                  showStandardDialog(
-                                    context,
-                                    ref,
-                                    const DialogMessage(
-                                      "Project Created",
-                                      "Your project has successfully been created!",
-                                      "",
-                                    ),
-                                  );
-                                } else {
-                                  ///Error
-                                  showStandardDialog(
-                                    context,
-                                    ref,
-                                    const DialogMessage(
-                                      "Failed",
-                                      "Tales encountered an error and you project could not be successfully created!",
-                                      "",
-                                    ),
-                                  );
-                                }
-                              }
+                              initiateProjectCreation(
+                                context,
+                                ref,
+                                textControllerProjectName.value.text,
+                                textControllerDescription.value.text,
+                                textControllerCopyrightHolder.value.text,
+                              );
                             },
                             child: CustomContainer(
                               height: 40,
@@ -285,26 +245,108 @@ class DialogNewProject extends ConsumerWidget {
   }
 }
 
-Future<bool> createProject(String projectLocation, String projectName) async {
+Future<void> initiateProjectCreation(BuildContext context, WidgetRef ref, String projectName,
+    String projectDescription, String projectCopyrightHolder) async {
+  ///Check if name was provided
+  if (projectName.trim().isEmpty) {
+    showStandardDialog(
+      context,
+      ref,
+      const DialogMessage(
+        "Missing Info",
+        "The \"Project Name\" field is empty. Please fill in the field to continue.",
+        "Ok",
+      ),
+    );
+    return;
+  }
+
+  String talesProjectPath = ref.watch(app_providers.projectDirectoryPath);
+
+  ///Check if Project directory is set
+  if (!doesDirectoryExist(talesProjectPath)) {
+    showStandardDialog(
+      context,
+      ref,
+      DialogAction(
+        "Setup Directory",
+        "Tales needs to have a directory in order to store projects. Please visit Settings to setup the \"Project Directory\"",
+        "Open Settings",
+        "Cancel",
+        () {
+          ///Open Settings Dialog
+          showStandardDialog(context, ref, const DialogSettings());
+        },
+        () {},
+      ),
+    );
+    return;
+  }
+
+  ///Create Project
+  if (!(await createProject(talesProjectPath, projectName, projectDescription, projectCopyrightHolder))) {
+    if (context.mounted) {
+      showStandardDialog(
+        context,
+        ref,
+        DialogError(
+          "An unknown error has occurred during the creation of your project.",
+        ),
+      );
+    }
+    return;
+  }
+
+  ///Remove any open dialogs
+  if (context.mounted) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  ///Display Success
+  if (context.mounted) {
+    showStandardDialog(
+      context,
+      ref,
+      DialogAction(
+        "Project Created",
+        "Your project has successfully been created!\n\nWould you like to open the project now?",
+        "Open",
+        "Close",
+        () {
+          ///Open Project File
+        },
+        () {},
+      ),
+    );
+  }
+}
+
+Future<bool> createProject(String projectLocation, String projectName, String projectDescription,
+    String projectCopyrightHolder) async {
   ///Create Project Folder
   if (!(await createFolder(projectLocation, projectName))) {
     return false;
   }
 
   ///Create Project Sub-Folders
-  List<String> subfolderNames = [
-    "Chapters",
-    "Characters",
-    "Locations",
-    "Research",
-    "Recycle Bin"
-  ];
-  for (String subfolderName in subfolderNames) {
-    if (!(await createFolder("$projectLocation/$projectName", subfolderName))) {
+  for (String subfolderName in templateProjectSubfolders) {
+    if (!(await createFolder(path.join(projectLocation, projectName), subfolderName))) {
       return false;
     }
   }
 
+  ///Create Project Overview File
+  if (!(await createFile(
+      path.join(projectLocation, projectName),
+      "Overview$fileTypeOverview",
+      templateProjectOverview(
+        projectName,
+        projectDescription,
+        projectCopyrightHolder,
+        DateTime.now().toUtc().toString(),
+      )))) {
+    return false;
+  }
   return true;
 }
 
@@ -316,7 +358,21 @@ Future<bool> createFolder(String folderPath, String folderName) async {
   if (!(await projectFolder.exists())) {
     await projectFolder.create(recursive: true);
     return true;
-  } else {
-    return false;
   }
+  return false;
+}
+
+Future<bool> createFile(String filePath, String fileName, String? fileContent) async {
+  ///Create File
+  final projectFile = File(path.join(filePath, fileName));
+
+  if (!(await projectFile.exists())) {
+    if (fileContent == null) {
+      projectFile.create();
+    } else {
+      projectFile.writeAsStringSync(fileContent);
+    }
+    return true;
+  }
+  return false;
 }
