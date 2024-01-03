@@ -122,44 +122,8 @@ class DialogSettings extends ConsumerWidget {
                                       message:
                                           'Projects will be stored in:\n$projectDirectoryWatcher',
                                       buttonText: "Select",
-                                      buttonFunction: () async {
-                                        ///Prompt user to select Directory
-                                        FilePicker.platform.getDirectoryPath().then((selectedPath) {
-                                          if (selectedPath == null) {
-                                            showStandardDialog(
-                                              context,
-                                              ref,
-                                              const DialogMessage(
-                                                "Action Cancelled",
-                                                "The dialog was dismissed before a directory was selected. No changes are made.",
-                                                "Ok",
-                                              ),
-                                            );
-                                          } else {
-                                            checkProjectDirectory(context, ref, selectedPath).then(
-                                              (value) {
-                                                debugPrint("User Continuing");
-                                                showStandardDialog(
-                                                  context,
-                                                  ref,
-                                                  DialogAction(
-                                                    "Migrate Projects",
-                                                    "A new Project Directory has been selected. Continuing will move already existing projects to the new directory.",
-                                                    "Migrate",
-                                                    "Cancel",
-                                                    () {
-                                                      setNewProjectDirectory(
-                                                          context, ref, selectedPath);
-                                                    },
-                                                    () {},
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        });
-
-                                        ///Check if action was cancelled
+                                      buttonFunction: () {
+                                        selectNewDirectory(context, ref);
                                       },
                                       disabled: projectLayoutWatcher,
                                     ),
@@ -212,53 +176,54 @@ class DialogSettings extends ConsumerWidget {
   }
 }
 
-Future<void> moveProjects(BuildContext context, WidgetRef ref, String newPath) async {
-  ///Get Current Directory
-  final currentProjectDirectory = ref.watch(app_providers.projectDirectoryPath);
+Future<void> selectNewDirectory(BuildContext context, WidgetRef ref) async {
+  String? selectedPath;
+  bool userContinue = true;
 
-  if (!doesDirectoryExist(currentProjectDirectory)) {
-    ///Create New Location
-    await showAsyncDialog(
-      context,
-      ref,
-      const DialogMessage(
-        "Folder Creation",
-        "Tales is going to create a new folder called 'TalesProjects', this folder will store all your projects.",
-        "Ok",
-      ),
-    );
+  ///Prompt user to select folder
+  await FilePicker.platform.getDirectoryPath().then((result) => selectedPath = result);
 
-    ///Create TalesProjects Folder
-    if (!(await createFolder(newPath, "TalesProjects"))) {
-      ///Failed
-      if (context.mounted) {
-        //projectMigrationError(context, ref, null);
-      }
-      return;
+  ///Check if user cancelled
+  if (selectedPath == null) {
+    if (context.mounted) {
+      showStandardDialog(
+        context,
+        ref,
+        const DialogMessage(
+          "Cancelled",
+          "The dialog was dismissed before a directory was selected and the process has been cancelled.",
+          "Ok",
+        ),
+      );
     }
-  } else {
-    ///Move to New Directory
-    try {
-      Directory(currentProjectDirectory).renameSync(path.join(newPath, "TalesProjects"));
-    } catch (e) {
-      projectMigrationError(context, ref, e.toString() + newPath);
-      return;
+    return;
+  }
+
+  ///Check if selected directory is in container
+  if (selectedPath!.toLowerCase().trim().contains('com.simple.tales')) {
+    if (context.mounted) {
+      await showAsyncDialog(
+        context,
+        ref,
+        DialogAction(
+          "Warning",
+          "The directory you selected is contained within Tales, therefore all projects will be deleted if Tales is ever uninstalled. It's recommended to select a different directory (ex. Documents, Desktop, etc.).",
+          "Continue",
+          "Cancel",
+          () {
+
+          },
+          () {
+            userContinue = false;
+          },
+        ),
+      );
     }
   }
-  final projectDirectoryReader = ref.watch(app_providers.projectDirectoryPath.notifier);
-  projectDirectoryReader.saveState(
-      path.join(newPath, "TalesProjects"), "projectDirectoryPath", ref);
 
-  if (context.mounted) {
-    showStandardDialog(
-      context,
-      ref,
-      const DialogMessage(
-        "Success",
-        "Any existing and future projects will now be found in the new location.",
-        "Thanks",
-      ),
-    );
+  ///Continue with setting new directory
+  if (userContinue && context.mounted) {
+    setNewProjectDirectory(context, ref, selectedPath!);
   }
 }
 
@@ -268,21 +233,6 @@ void projectMigrationError(BuildContext context, WidgetRef ref, String errorMess
       context,
       ref,
       DialogError(errorMessage),
-    );
-  }
-}
-
-Future<void> checkProjectDirectory(BuildContext context, WidgetRef ref, String newPath) async {
-  if (newPath.toLowerCase().trim().contains("com.simple.tales")) {
-    await showAsyncDialog(
-      context,
-      ref,
-      const DialogMessage(
-        "Warning",
-        "The selected directory is contained within Tales, this means if the application is ever uninstalled all Projects will be deleted.\n\nIt's recommended to selected a different directory.",
-        //"The directory you selected is contained within Tales, therefore all projects will be deleted if Tales is ever uninstalled. It's recommended to select a directory (ex. Documents, Desktop, etc.).",
-        "I understand",
-      ),
     );
   }
 }

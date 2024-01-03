@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:tales/UniversalWidgets/custom_single_child_scroll_view.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
@@ -59,6 +60,31 @@ class DialogError extends ConsumerWidget {
                           color: theme.secondText,
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      const Gap(10),
+                      CustomContainer(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(maxHeight: 175),
+                        bodyColour: theme.fourthBackground,
+                        borderRadius: app_constants.borderRadiusL,
+                        child: CustomSingleChildScrollView(
+                          borderRadius: app_constants.borderRadiusL,
+                          children: [
+                            const Gap(10),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                errorMessage,
+                                style: TextStyle(
+                                  color: theme.secondText,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                            const Gap(10),
+                          ],
                         ),
                       ),
                     ],
