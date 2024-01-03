@@ -9,6 +9,7 @@ import 'package:tales/Dialogs/dialog_message.dart';
 import 'package:tales/Dialogs/dialog_new_project.dart';
 import 'package:tales/Dialogs/dialog_settings.dart';
 import 'package:tales/Dialogs/system_dialog.dart';
+import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -247,36 +248,16 @@ class SettingsHelp extends ConsumerWidget {
             ///Open Settings Dialog
             showStandardDialog(context, ref, const DialogSettings());
           },
-          child: Container(
-            height: 40,
-            width: 40,
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: SvgPicture.asset(
-                "assets/icons/icon_settings.svg",
-                colorFilter: ColorFilter.mode(theme.secondText, BlendMode.srcIn),
-              ),
-            ),
-          ),
+          child: ButtonIcon(
+            buttonIcon: 'assets/icons/icon_settings.svg',
+          )
         ),
         GestureDetector(
           onTap: () {
             ///Open Settings Dialog
             showStandardDialog(context, ref, const DialogHelp());
           },
-          child: Container(
-            height: 40,
-            width: 40,
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: SvgPicture.asset(
-                "assets/icons/icon_help.svg",
-                colorFilter: ColorFilter.mode(theme.secondText, BlendMode.srcIn),
-              ),
-            ),
-          ),
+          child: ButtonIcon(buttonIcon: 'assets/icons/icon_help.svg',)
         ),
       ],
     );

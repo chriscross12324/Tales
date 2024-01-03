@@ -4,14 +4,13 @@ import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:tales/Dialogs/dialog_action.dart';
 import 'package:tales/Dialogs/dialog_error.dart';
 import 'package:tales/Dialogs/dialog_message.dart';
 import 'package:tales/Dialogs/dialog_settings.dart';
 import 'package:tales/Dialogs/system_dialog.dart';
 import 'package:tales/UniversalWidgets/custom_animated_container.dart';
-import 'package:tales/UniversalWidgets/custom_container.dart';
+import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_text_form_field_container.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -186,21 +185,9 @@ class DialogNewProject extends ConsumerWidget {
                               ///Close Dialog
                               Navigator.of(context, rootNavigator: true).pop();
                             },
-                            child: CustomContainer(
-                              height: 40,
-                              width: 150,
-                              bodyColour: theme.thirdBackground,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
+                            child: ButtonDialogSecondary(
+                              buttonText: 'Cancel',
+                              buttonWidth: 150,
                             ),
                           ),
                           const Gap(app_constants.modulePadding),
@@ -214,21 +201,9 @@ class DialogNewProject extends ConsumerWidget {
                                 textControllerCopyrightHolder.value.text,
                               );
                             },
-                            child: CustomContainer(
-                              height: 40,
-                              width: 150,
-                              bodyColour: SystemTheme.accentColor.accent,
-                              borderRadius: app_constants.borderRadiusM,
-                              child: Center(
-                                child: Text(
-                                  "Create Project",
-                                  style: TextStyle(
-                                    color: theme.firstText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            child: ButtonDialogPrimary(
+                              buttonText: 'Create Project',
+                              buttonWidth: 150,
                             ),
                           ),
                         ],
@@ -284,7 +259,8 @@ Future<void> initiateProjectCreation(BuildContext context, WidgetRef ref, String
   }
 
   ///Create Project
-  if (!(await createProject(talesProjectPath, projectName, projectDescription, projectCopyrightHolder))) {
+  if (!(await createProject(
+      talesProjectPath, projectName, projectDescription, projectCopyrightHolder))) {
     if (context.mounted) {
       showStandardDialog(
         context,

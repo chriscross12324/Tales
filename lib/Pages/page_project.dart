@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:tales/Dialogs/dialog_confirm.dart';
 import 'package:tales/Pages/page_starting.dart';
+import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 import 'package:tales/UniversalWidgets/custom_single_child_scroll_view.dart';
 import 'package:tales/UniversalWidgets/resizable_pane.dart';
@@ -195,20 +195,10 @@ class NavigationPane extends ConsumerWidget {
                           ),
                         );
                       },
-                      child: Container(
-                        width: 30,
-                        color: Colors.transparent,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            "assets/icons/icon_close.svg",
-                            height: 14,
-                            width: 14,
-                            colorFilter: ColorFilter.mode(
-                              theme.secondText,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
+                      child: ButtonIcon(
+                        buttonIcon: 'assets/icons/icon_close.svg',
+                        buttonSize: 30,
+                        iconPadding: 8,
                       ),
                     ),
                   )

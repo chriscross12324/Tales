@@ -62,7 +62,7 @@ class DialogConfirm extends ConsumerWidget {
                       ),
                       const Gap(4),
                       Text(
-                        "$dialogBody\n\nPress & Hold the 'Confirm' button below continue.",
+                        "$dialogBody\n\nPress & Hold the \"Confirm\" button below to continue.",
                         style: TextStyle(
                           color: theme.secondText,
                           fontSize: 14,

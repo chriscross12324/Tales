@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -271,7 +272,8 @@ class ButtonDialogSecondary extends ConsumerWidget {
                   bodyColour: pressed
                       ? pressedColour
                       : hovered
-                      ? hoveredColour : theme.thirdBackground,
+                          ? hoveredColour
+                          : theme.thirdBackground,
                   borderRadius: app_constants.borderRadiusM,
                   duration: const Duration(milliseconds: 250),
                   child: child,
@@ -288,6 +290,95 @@ class ButtonDialogSecondary extends ConsumerWidget {
                   color: theme.firstText,
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ButtonIcon extends ConsumerWidget {
+  ButtonIcon({super.key, required this.buttonIcon, this.buttonSize = 40.0, this.iconPadding = 0.0});
+
+  final String buttonIcon;
+  final double buttonSize;
+  final double iconPadding;
+  final ValueNotifier<bool> _isHovering = ValueNotifier(false);
+  final ValueNotifier<bool> _isPressed = ValueNotifier(false);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final theme = app_themes.theme(themeWatcher, ref);
+
+    return Listener(
+      onPointerDown: (_) {
+        _isPressed.value = true;
+      },
+      onPointerUp: (_) {
+        _isPressed.value = false;
+      },
+      onPointerCancel: (_) {
+        _isPressed.value = false;
+      },
+      child: MouseRegion(
+        onEnter: (_) {
+          _isHovering.value = true;
+        },
+        onExit: (_) {
+          _isHovering.value = false;
+        },
+        child: ValueListenableBuilder(
+          valueListenable: _isHovering,
+          builder: (BuildContext context, bool hovered, Widget? child) {
+            Color hoveredColour = Color.fromARGB(
+              (theme.firstText.alpha * 0.15).round(),
+              (theme.firstText.red).round(),
+              (theme.firstText.green).round(),
+              (theme.firstText.blue).round(),
+            );
+
+            return ValueListenableBuilder(
+              valueListenable: _isPressed,
+              builder: (BuildContext context, bool pressed, _) {
+                Color pressedColour = Color.fromARGB(
+                  (theme.firstText.alpha * 0.05).round(),
+                  (theme.firstText.red).round(),
+                  (theme.firstText.green).round(),
+                  (theme.firstText.blue).round(),
+                );
+
+                return AnimatedCustomContainer(
+                  height: buttonSize,
+                  width: buttonSize,
+                  bodyColour: pressed
+                      ? pressedColour
+                      : hovered
+                          ? hoveredColour
+                          : Colors.transparent,
+                  borderRadius: app_constants.borderRadiusS,
+                  duration: const Duration(milliseconds: 250),
+                  child: AnimatedScale(
+                    scale: pressed ? 0.85 : 1.0,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.fastOutSlowIn,
+                    child: child,
+                  ),
+                );
+              },
+            );
+          },
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(iconPadding),
+              child: SvgPicture.asset(
+                buttonIcon,
+                colorFilter: ColorFilter.mode(
+                  theme.secondText,
+                  BlendMode.srcIn,
                 ),
               ),
             ),
