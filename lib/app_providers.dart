@@ -41,7 +41,7 @@ final settingAutocorrect = StateNotifierProvider<BoolProvider, bool>((ref) {
 });
 
 final projectDirectoryPath = StateNotifierProvider<StringProvider, String>((ref) {
-  return StringProvider(ref.read(sharedPreferencesProvider).tryGetString("projectDirectoryPath", "NULL"));
+  return StringProvider(ref.read(sharedPreferencesProvider).tryGetString("projectDirectoryPath", "Not Configured"));
 });
 
 extension on SharedPreferences {

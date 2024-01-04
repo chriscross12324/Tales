@@ -16,7 +16,6 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-
 class PageStarting extends ConsumerWidget {
   const PageStarting({super.key});
 
@@ -71,15 +70,14 @@ class PageStarting extends ConsumerWidget {
                     const Gap(10),
                     Text(
                       "Looks like you don't have any\nprojects yet.",
-                      style: TextStyle(
-                          color: theme.fourthText, fontSize: 24),
+                      style: TextStyle(color: theme.fourthText, fontSize: 24),
                       textAlign: TextAlign.center,
                     ),
                     const Gap(20),
                     Text(
-                      listProjectsInDirectory(ref.watch(app_providers.projectDirectoryPath)).toString(),
-                      style: TextStyle(
-                          color: theme.fourthText.withOpacity(0.25), fontSize: 18),
+                      listProjectsInDirectory(ref.watch(app_providers.projectDirectoryPath))
+                          .toString(),
+                      style: TextStyle(color: theme.fourthText.withOpacity(0.25), fontSize: 18),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -120,15 +118,13 @@ class LeftPane extends ConsumerWidget {
               const Gap(24),
               Text(
                 "Tales",
-                style: TextStyle(
-                    color: theme.firstText, fontSize: 32),
+                style: TextStyle(color: theme.firstText, fontSize: 32),
                 textAlign: TextAlign.center,
               ),
               const Gap(4),
               Text(
                 "Write something NEW, CREATIVE and EXPRESSIVE.",
-                style: TextStyle(
-                    color: theme.thirdText, fontSize: 11),
+                style: TextStyle(color: theme.thirdText, fontSize: 11),
                 textAlign: TextAlign.center,
               )
             ],
@@ -136,10 +132,12 @@ class LeftPane extends ConsumerWidget {
         ),
         const Gap(8),
         GestureDetector(
-          onTap: () {
-            showStandardDialog(context, ref, const DialogNewProject());
-          },
-          child: ButtonDialogSecondary(buttonText: 'New Project',)/*CustomContainer(
+            onTap: () {
+              showStandardDialog(context, ref, const DialogNewProject());
+            },
+            child: ButtonDialogSecondary(
+              buttonText: 'New Project',
+            ) /*CustomContainer(
             height: 40,
             bodyColour: theme.secondBackground,
             borderRadius: 5,
@@ -165,7 +163,7 @@ class LeftPane extends ConsumerWidget {
               ),
             ),
           ),*/
-        ),/*
+            ), /*
         const Gap(8),
         GestureDetector(
           onTap: () {
@@ -221,8 +219,6 @@ class RightPaneProjectNew extends StatelessWidget {
   }
 }
 
-
-
 class SettingsHelp extends ConsumerWidget {
   const SettingsHelp({super.key});
 
@@ -241,14 +237,16 @@ class SettingsHelp extends ConsumerWidget {
           },
           child: ButtonIcon(
             buttonIcon: 'assets/icons/icon_settings.svg',
-          )
+          ),
         ),
         GestureDetector(
           onTap: () {
             ///Open Settings Dialog
             showStandardDialog(context, ref, const DialogHelp());
           },
-          child: ButtonIcon(buttonIcon: 'assets/icons/icon_help.svg',)
+          child: ButtonIcon(
+            buttonIcon: 'assets/icons/icon_help.svg',
+          ),
         ),
       ],
     );
@@ -256,15 +254,18 @@ class SettingsHelp extends ConsumerWidget {
 }
 
 List<String> listProjectsInDirectory(String path) {
-  final parentDirectory = Directory(path);
-  final childDirectories =  parentDirectory.listSync();
-
   List<String> folderNames = [];
+  try {
+    final parentDirectory = Directory(path);
+    final childDirectories = parentDirectory.listSync();
 
-  for (var entity in childDirectories) {
-    if (entity is Directory) {
-      folderNames.add(entity.path);
+    for (var entity in childDirectories) {
+      if (entity is Directory) {
+        folderNames.add(entity.path);
+      }
     }
+  } catch (e) {
+    folderNames.add(e.toString());
   }
 
   return folderNames;
