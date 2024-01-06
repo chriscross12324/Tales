@@ -437,7 +437,7 @@ class ButtonOpenProject extends ConsumerWidget {
                       ? pressedColour
                       : hovered
                       ? SystemTheme.accentColor.accent
-                      : theme.fourthOutline,
+                      : theme.fourthBackground,
                   borderRadiusCustom: const [0, 0, app_constants.borderRadiusM, app_constants.borderRadiusM],
                   borderRadiusSubtractionCustom: const [0, 0, 0, 0],
                   duration: const Duration(milliseconds: 250),

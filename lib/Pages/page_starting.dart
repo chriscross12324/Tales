@@ -214,8 +214,8 @@ class ItemProject extends ConsumerWidget {
     final theme = app_themes.theme(themeWatcher, ref);
 
     return CustomContainer(
-      bodyColour: theme.fourthBackground,
-      borderColour: theme.fourthOutline,
+      bodyColour: theme.thirdBackground,
+      borderColour: theme.thirdOutline,
       borderRadius: app_constants.borderRadiusM,
       child: Column(
         children: [
