@@ -259,15 +259,14 @@ Future<void> initiateProjectCreation(BuildContext context, WidgetRef ref, String
   }
 
   ///Create Project
-  if (!(await createProject(
-      talesProjectPath, projectName, projectDescription, projectCopyrightHolder))) {
+  String? createProjectResult = await createProject(
+      talesProjectPath, projectName, projectDescription, projectCopyrightHolder);
+  if (createProjectResult != null) {
     if (context.mounted) {
       showStandardDialog(
         context,
         ref,
-        DialogError(
-          "An unknown error has occurred during the creation of your project.",
-        ),
+        DialogError(createProjectResult),
       );
     }
     return;
@@ -297,36 +296,37 @@ Future<void> initiateProjectCreation(BuildContext context, WidgetRef ref, String
   }
 }
 
-Future<bool> createProject(String projectLocation, String projectName, String projectDescription,
+Future<String?> createProject(String projectLocation, String projectName, String projectDescription,
     String projectCopyrightHolder) async {
   ///Create Project Folder
-  if (!(await createFolder(projectLocation, projectName))) {
-    return false;
+  String? folderCreationResult = await createFolder(projectLocation, projectName);
+  if (folderCreationResult != null) {
+    return folderCreationResult;
   }
 
   ///Create Project Sub-Folders
   for (String subfolderName in templateProjectSubfolders) {
-    if (!(await createFolder(path.join(projectLocation, projectName), subfolderName))) {
-      return false;
+    String? subFolderCreationResult =
+        await createFolder(path.join(projectLocation, projectName), subfolderName);
+    if (subFolderCreationResult != null) {
+      return subFolderCreationResult;
     }
   }
 
   ///Create Project Overview File
-  if (!(await createFile(
-      path.join(projectLocation, projectName),
-      "Overview$fileTypeOverview",
-      templateProjectOverview(
-        projectName,
-        projectDescription,
-        projectCopyrightHolder,
-        DateTime.now().toUtc().toString(),
-      )))) {
-    return false;
-  }
-  return true;
+  return await createFile(
+    path.join(projectLocation, projectName),
+    "Overview$fileTypeOverview",
+    templateProjectOverview(
+      projectName,
+      projectDescription,
+      projectCopyrightHolder,
+      DateTime.now().toUtc().toString(),
+    ),
+  );
 }
 
-Future<bool> createFolder(String folderPath, String folderName) async {
+Future<String?> createFolder(String folderPath, String folderName) async {
   ///Create Folder
   final projectFolder = Directory("$folderPath/$folderName");
 
@@ -334,15 +334,15 @@ Future<bool> createFolder(String folderPath, String folderName) async {
   if (!(await projectFolder.exists())) {
     try {
       await projectFolder.create(recursive: true);
-      return true;
+      return null;
     } catch (e) {
-      return false;
+      return e.toString();
     }
   }
-  return false;
+  return "The requested folder already exists: createFolder($folderPath, $folderName)";
 }
 
-Future<bool> createFile(String filePath, String fileName, String? fileContent) async {
+Future<String?> createFile(String filePath, String fileName, String? fileContent) async {
   ///Create File
   final projectFile = File(path.join(filePath, fileName));
 
@@ -352,7 +352,7 @@ Future<bool> createFile(String filePath, String fileName, String? fileContent) a
     } else {
       projectFile.writeAsStringSync(fileContent);
     }
-    return true;
+    return null;
   }
-  return false;
+  return "The requested file already exists: createFile($filePath, $fileName, ...)";
 }
