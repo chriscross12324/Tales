@@ -20,9 +20,7 @@ class CustomSwitchListTile extends ConsumerWidget {
     this.isExperimental = false,
     this.defaultValue,
     this.disabled = false,
-  })  : assert(
-            (isExperimental == true && defaultValue != null) ||
-                isExperimental == false,
+  })  : assert((isExperimental == true && defaultValue != null) || isExperimental == false,
             '"isExperimental: true" must be accompanied by a defaultValue'),
         super(key: key);
 
@@ -94,7 +92,11 @@ class CustomSwitchListTile extends ConsumerWidget {
                       onTap: () {
                         if (sharedPreferencesKey != null) {
                           ///Save Setting
-                          boolReader.saveState(false, sharedPreferencesKey!, ref);
+                          boolReader.updateState(
+                            false,
+                            sharedPrefsKey: sharedPreferencesKey,
+                            ref: ref,
+                          );
                         } else {
                           ///Update Setting
                           boolReader.updateState(false);
@@ -133,7 +135,11 @@ class CustomSwitchListTile extends ConsumerWidget {
                       onTap: () {
                         if (sharedPreferencesKey != null) {
                           ///Save Setting
-                          boolReader.saveState(true, sharedPreferencesKey!, ref);
+                          boolReader.updateState(
+                            true,
+                            sharedPrefsKey: sharedPreferencesKey,
+                            ref: ref,
+                          );
                         } else {
                           ///Update Setting
                           boolReader.updateState(true);

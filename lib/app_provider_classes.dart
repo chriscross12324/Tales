@@ -6,150 +6,75 @@ import 'app_providers.dart';
 class IntProvider extends StateNotifier<int> {
   IntProvider(int defaultValue) : super(defaultValue);
 
-  void updateState(int newState) {
-    state = newState;
-  }
-
-  void saveState(int newState, String sharedPreferencesKey, WidgetRef ref) {
+  void updateState(int newState, {String? sharedPrefsKey, WidgetRef? ref}) {
     try {
-      ///Save State
-      ref
-          .read(sharedPreferencesProvider)
-          .setInt(sharedPreferencesKey, newState);
-
-      ///Set State
-      updateState(newState);
-    } catch (E) {
-      ///Show Error
+      if (sharedPrefsKey != null && ref != null) {
+        ///Save
+        ref.watch(sharedPreferencesProvider).setInt(sharedPrefsKey, newState);
+      }
+      state = newState;
+    } catch (e) {
       debugPrint("ERROR | File: app_provider_classes.dart | Class: IntProvider | "
-          "Function: saveState() | MSG: ${E.toString()}");
+          "Function: updateState() | MSG: ${e.toString()} :: $newState :: $sharedPrefsKey :: $ref");
     }
   }
 
-  int getValue() {
-    return state;
-  }
+  int getValue() => state;
 }
 
 class DoubleProvider extends StateNotifier<double> {
-  DoubleProvider(double state) : super(state);
+  DoubleProvider(double defaultValue) : super(defaultValue);
 
-  void updateState(double newState) {
-    state = newState;
-  }
-
-  void saveState(double newState, String sharedPreferencesKey, WidgetRef ref) {
+  void updateState(double newState, {String? sharedPrefsKey, WidgetRef? ref}) {
     try {
-      ///Save State
-      ref
-          .read(sharedPreferencesProvider)
-          .setDouble(sharedPreferencesKey, newState);
-
-      ///Set State
-      updateState(newState);
-    } catch (E) {
-      ///Show Error
-      debugPrint(
-          "ERROR | File: app_provider_classes.dart | Class: DoubleProvider | "
-          "Function: saveState() | MSG: ${E.toString()}");
+      if (sharedPrefsKey != null && ref != null) {
+        ///Save
+        ref.watch(sharedPreferencesProvider).setDouble(sharedPrefsKey, newState);
+      }
+      state = newState;
+    } catch (e) {
+      debugPrint("ERROR | File: app_provider_classes.dart | Class: DoubleProvider | "
+          "Function: updateState() | MSG: ${e.toString()} :: $newState :: $sharedPrefsKey :: $ref");
     }
   }
 
-  double getValue() {
-    return state;
-  }
-}
-
-class StringProvider extends StateNotifier<String> {
-  StringProvider(String state) : super(state);
-
-  void updateState(String newState) {
-    state = newState;
-  }
-
-  void saveState(String newState, String sharedPreferencesKey, WidgetRef ref) {
-    try {
-      ///Save State
-      ref
-          .read(sharedPreferencesProvider)
-          .setString(sharedPreferencesKey, newState);
-
-      ///Set State
-      updateState(newState);
-    } catch (E) {
-      ///Show Error
-      debugPrint(
-          "ERROR | File: app_provider_classes.dart | Class: StringProvider | "
-          "Function: saveState() | MSG: ${E.toString()}");
-    }
-  }
-
-  String getValue() {
-    return state;
-  }
+  double getValue() => state;
 }
 
 class BoolProvider extends StateNotifier<bool> {
-  BoolProvider(bool state) : super(state);
+  BoolProvider(bool defaultValue) : super(defaultValue);
 
-  void updateState(bool newState) {
-    state = newState;
-  }
-
-  void saveState(bool newState, String sharedPreferencesKey, WidgetRef ref) {
+  void updateState(bool newState, {String? sharedPrefsKey, WidgetRef? ref}) {
     try {
-      ///Save State
-      ref
-          .read(sharedPreferencesProvider)
-          .setBool(sharedPreferencesKey, newState);
-
-      ///Set State
-      updateState(newState);
-    } catch (E) {
-      ///Show Error
+      if (sharedPrefsKey != null && ref != null) {
+        ///Save
+        ref.watch(sharedPreferencesProvider).setBool(sharedPrefsKey, newState);
+      }
+      state = newState;
+    } catch (e) {
       debugPrint("ERROR | File: app_provider_classes.dart | Class: BoolProvider | "
-          "Function: saveState() | MSG: ${E.toString()}");
+          "Function: updateState() | MSG: ${e.toString()} :: $newState :: $sharedPrefsKey :: $ref");
     }
   }
 
-  bool getValue() {
-    return state;
-  }
+  bool getValue() => state;
 }
 
-class MapStringProvider extends StateNotifier<Map<String, dynamic>> {
-  MapStringProvider(Map<String, dynamic> state) : super(state);
+class StringProvider extends StateNotifier<String> {
+  StringProvider(String defaultValue) : super(defaultValue);
 
-  void replaceState(Map<String, dynamic> replaceState) {
-    state = replaceState;
-  }
-
-  void updateMapState(String mapName, dynamic newValue) {
+  void updateState(String newState, {String? sharedPrefsKey, WidgetRef? ref}) {
     try {
-      state = {...state, ...{mapName: newValue}};
-    } catch(E) {
-      debugPrint("ERROR | File: app_provider_classes.dart | Class: MapStringProvider | "
-          "Function: updateMapState() | MSG: ${E.toString()}");
+      if (sharedPrefsKey != null && ref != null) {
+        ///Save
+        ref.watch(sharedPreferencesProvider).setString(sharedPrefsKey, newState);
+      }
+      state = newState;
+    } catch (e) {
+      debugPrint("ERROR | File: app_provider_classes.dart | Class: StringProvider | "
+          "Function: updateState() | MSG: ${e.toString()} :: $newState :: $sharedPrefsKey :: $ref");
     }
   }
 
-  Map<String, dynamic> getValue() {
-    return state;
-  }
-}
-
-class ListWidgetProvider extends StateNotifier<List<Widget>> {
-  ListWidgetProvider() : super([]);
-
-  void updateState(List<Widget> newState) {
-    state = newState;
-  }
-
-  void removeElement(Key key) {
-    state = state.where((element) => element.key != key).toList();
-  }
-
-  List<Widget> getValue() {
-    return state;
-  }
+  String getValue() => state;
 }

@@ -265,11 +265,12 @@ Future<void> setNewProjectDirectory(BuildContext context, WidgetRef ref, String 
   }
 
   ///Update Stored Directory
-  ref.watch(app_providers.projectDirectoryPath.notifier).saveState(
+  ref.watch(app_providers.projectDirectoryPath.notifier).updateState(
         requestedProjectDirectory,
-        "projectDirectoryPath",
-        ref,
+        sharedPrefsKey: "projectDirectoryPath",
+        ref: ref,
       );
+
 
   ///Show Success Dialog
   if (context.mounted) {
