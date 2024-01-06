@@ -25,7 +25,7 @@ class CustomButtonListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Opacity(

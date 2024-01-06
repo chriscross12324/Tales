@@ -53,10 +53,10 @@ class TalesApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
-    final layoutWatcher = ref.watch(app_providers.showProjectLayout);
+    final currentProjectWatcher = ref.watch(app_providers.currentProjectProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -64,7 +64,7 @@ class TalesApp extends ConsumerWidget {
         backgroundColor: theme.firstBackground,
         body: Padding(
           padding: const EdgeInsets.all(8),
-          child: layoutWatcher ? const PageProject() : const PageStarting(),
+          child: currentProjectWatcher.isEmpty ? const PageStarting() : const PageProject(),
         ),
       ),
     );

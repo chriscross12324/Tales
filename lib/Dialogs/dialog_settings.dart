@@ -25,9 +25,9 @@ class DialogSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final projectLayoutWatcher = ref.watch(app_providers.showProjectLayout);
-    final projectDirectoryWatcher = ref.watch(app_providers.projectDirectoryPath);
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final currentProjectWatcher = ref.watch(app_providers.currentProjectProvider);
+    final projectDirectoryPathWatcher = ref.watch(app_providers.settingProjectsPathProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Scaffold(
@@ -76,7 +76,7 @@ class DialogSettings extends ConsumerWidget {
                                       message:
                                           'Gives the application a darker appearance to make it easier on the eyes in dark environments.',
                                       sharedPreferencesKey: "settingDarkTheme",
-                                      boolProvider: app_providers.settingThemeProvider,
+                                      boolProvider: app_providers.settingDarkThemeProvider,
                                     ),
                                     const CustomListSeparator(),
                                     CustomSwitchListTile(
@@ -113,19 +113,19 @@ class DialogSettings extends ConsumerWidget {
                                       title: "Autocorrect",
                                       message:
                                           'This feature will automatically suggest or correct misspelled words or typos. Names and uncommon words may be incorrectly changed.',
-                                      boolProvider: app_providers.settingAutocorrect,
+                                      boolProvider: app_providers.settingAutocorrectProvider,
                                       sharedPreferencesKey: "settingAutocorrect",
                                     ),
                                     const CustomListSeparator(),
                                     CustomButtonListTile(
                                       title: "Project Directory",
                                       message:
-                                          'Projects will be stored in:\n$projectDirectoryWatcher',
+                                          'Projects will be stored in:\n$projectDirectoryPathWatcher',
                                       buttonText: "Select",
                                       buttonFunction: () {
                                         selectNewDirectory(context, ref);
                                       },
-                                      disabled: projectLayoutWatcher,
+                                      disabled: currentProjectWatcher.isNotEmpty,
                                     ),
                                   ],
                                 ),
@@ -238,7 +238,7 @@ void projectMigrationError(BuildContext context, WidgetRef ref, String errorMess
 }
 
 Future<void> setNewProjectDirectory(BuildContext context, WidgetRef ref, String newPath) async {
-  final currentProjectDirectory = ref.watch(app_providers.projectDirectoryPath);
+  final currentProjectDirectory = ref.watch(app_providers.settingProjectsPathProvider);
   final requestedProjectDirectory = path.join(newPath, app_constants.folderName);
 
   if (doesDirectoryExist(currentProjectDirectory)) {
@@ -265,9 +265,9 @@ Future<void> setNewProjectDirectory(BuildContext context, WidgetRef ref, String 
   }
 
   ///Update Stored Directory
-  ref.watch(app_providers.projectDirectoryPath.notifier).updateState(
+  ref.watch(app_providers.settingProjectsPathProvider.notifier).updateState(
         requestedProjectDirectory,
-        sharedPrefsKey: "projectDirectoryPath",
+        sharedPrefsKey: "settingProjectsPath",
         ref: ref,
       );
 

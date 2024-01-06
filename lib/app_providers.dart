@@ -11,67 +11,37 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError();
 });
 
-///App Settings
-///
-/// Appearance
-final settingThemeProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
-  return BoolProvider(ref
-      .read(sharedPreferencesProvider)
-      .tryGetBool("settingDarkTheme", true));
+///Appearance Setting Providers
+final settingDarkThemeProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
+  return BoolProvider(ref.read(sharedPreferencesProvider).tryGetValue("settingDarkTheme", true));
 });
-
 final settingDisableAnimationsProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
-  return BoolProvider(ref
-      .read(sharedPreferencesProvider)
-      .tryGetBool("settingDisableAnimations", false));
+  return BoolProvider(
+      ref.read(sharedPreferencesProvider).tryGetValue("settingDisableAnimations", false));
 });
 
-
-///App Settings
-///
-/// Experience
-final showProjectLayout = StateNotifierProvider<BoolProvider, bool>((ref) {
-  return BoolProvider(false);
+///Experience Setting Providers
+final settingAutocorrectProvider = StateNotifierProvider<BoolProvider, bool>((ref) {
+  return BoolProvider(ref.read(sharedPreferencesProvider).tryGetValue("settingAutocorrect", true));
+});
+final settingProjectsPathProvider = StateNotifierProvider<StringProvider, String>((ref) {
+  return StringProvider(
+      ref.read(sharedPreferencesProvider).tryGetValue("settingProjectsPath", "Not Configured"));
 });
 
-final settingAutocorrect = StateNotifierProvider<BoolProvider, bool>((ref) {
-  return BoolProvider(ref
-      .read(sharedPreferencesProvider)
-      .tryGetBool("settingAutocorrect", true));
-});
-
-final projectDirectoryPath = StateNotifierProvider<StringProvider, String>((ref) {
-  return StringProvider(ref.read(sharedPreferencesProvider).tryGetString("projectDirectoryPath", "Not Configured"));
+///Other Providers
+final currentProjectProvider = StateNotifierProvider<StringProvider, String>((ref) {
+  return StringProvider("");
 });
 
 extension on SharedPreferences {
-  int tryGetInt(String key, int defaultVal) {
+  T? tryGetValue<T>(String key, defaultValue) {
     try {
-      return getInt(key) ?? defaultVal;
-    } catch (E) {
-      debugPrint("ERROR | File: app_providers.dart | Extension: tryGetInt | "
-          "Tag: '$defaultVal' | MSG: ${E.toString()}");
-      return defaultVal;
-    }
-  }
-
-  String tryGetString(String key, String defaultVal) {
-    try {
-      return getString(key) ?? defaultVal;
-    } catch (E) {
-      debugPrint("ERROR | File: app_providers.dart | Extension: tryGetString | "
-          "Tag: '$defaultVal' | MSG: ${E.toString()}");
-      return defaultVal;
-    }
-  }
-
-  bool tryGetBool(String key, bool defaultVal) {
-    try {
-      return getBool(key) ?? defaultVal;
-    } catch (E) {
-      debugPrint("ERROR | File: app_providers.dart | Extension: tryGetBool | "
-          "Tag: '$defaultVal' | MSG: ${E.toString()}");
-      return defaultVal;
+      return get(key) ?? defaultValue;
+    } catch (e) {
+      debugPrint("ERROR | File: app_providers.dart | Extension: tryGetValue | "
+          "Tag: '$defaultValue' | MSG: ${e.toString()}");
+      return defaultValue;
     }
   }
 }

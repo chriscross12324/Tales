@@ -29,7 +29,7 @@ class _ResizablePaneState extends ConsumerState<ResizablePane> {
 
   @override
   Widget build(BuildContext context) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
     //maxPaneWidth = MediaQuery.of(context).size.width / 2;
 

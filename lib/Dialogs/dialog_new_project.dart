@@ -23,7 +23,7 @@ class DialogNewProject extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     final textControllerProjectName = TextEditingController();
@@ -236,7 +236,7 @@ Future<void> initiateProjectCreation(BuildContext context, WidgetRef ref, String
     return;
   }
 
-  String talesProjectPath = ref.watch(app_providers.projectDirectoryPath);
+  String talesProjectPath = ref.watch(app_providers.settingProjectsPathProvider);
 
   ///Check if Project directory is set
   if (!doesDirectoryExist(talesProjectPath)) {

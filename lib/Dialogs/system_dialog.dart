@@ -6,7 +6,7 @@ import 'package:tales/app_themes.dart' as app_themes;
 
 void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) {
   final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
-  final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+  final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
   final theme = app_themes.theme(themeWatcher, ref);
 
   showGeneralDialog(
@@ -35,7 +35,7 @@ void showStandardDialog(BuildContext context, WidgetRef ref, Widget dialogLayout
 
 Future<void> showAsyncDialog(BuildContext context, WidgetRef ref, Widget dialogLayout) async {
   final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
-  final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+  final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
   final theme = app_themes.theme(themeWatcher, ref);
 
   await showGeneralDialog(

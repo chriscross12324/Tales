@@ -23,8 +23,8 @@ class PageStarting extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final projectDirectory = ref.watch(app_providers.projectDirectoryPath);
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final projectsPathWatcher = ref.watch(app_providers.settingProjectsPathProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Scaffold(
@@ -55,7 +55,7 @@ class PageStarting extends ConsumerWidget {
               bodyColour: theme.secondBackground,
               borderRadius: app_constants.borderRadiusS,
               child: RightPane(
-                projectsDirectory: projectDirectory,
+                projectsDirectory: projectsPathWatcher,
               ),
             ),
           ),
@@ -70,7 +70,7 @@ class LeftPane extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Column(
@@ -163,8 +163,7 @@ class _RightPaneState extends ConsumerState<RightPane> {
 
   @override
   Widget build(BuildContext context) {
-    final layoutReader = ref.watch(app_providers.showProjectLayout.notifier);
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Center(
@@ -210,7 +209,7 @@ class ItemProject extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return CustomContainer(
@@ -279,7 +278,7 @@ class SettingsHelp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Row(

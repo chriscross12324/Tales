@@ -31,7 +31,7 @@ class _ButtonPressHoldState extends ConsumerState<ButtonPressHold> {
   @override
   Widget build(BuildContext context) {
     final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Listener(
@@ -142,7 +142,7 @@ class ButtonDialogPrimary extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Listener(
@@ -226,7 +226,7 @@ class ButtonDialogSecondary extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Listener(
@@ -312,7 +312,7 @@ class ButtonIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Listener(
@@ -398,7 +398,7 @@ class ButtonOpenProject extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
 
     return Listener(

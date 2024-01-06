@@ -34,7 +34,7 @@ class CustomSwitchListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
     final theme = app_themes.theme(themeWatcher, ref);
     final boolWatcher = ref.watch(boolProvider);
     final boolReader = ref.watch(boolProvider.notifier);
