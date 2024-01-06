@@ -332,8 +332,12 @@ Future<bool> createFolder(String folderPath, String folderName) async {
 
   ///Create Folder if it doesn't exist
   if (!(await projectFolder.exists())) {
-    await projectFolder.create(recursive: true);
-    return true;
+    try {
+      await projectFolder.create(recursive: true);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
   return false;
 }

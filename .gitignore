@@ -45,3 +45,4 @@ app.*.map.json
 
 # Developer specified files here
 /assets/logos/logo_placeholder.png
+/assets/logos/logo_placeholder_gray.png

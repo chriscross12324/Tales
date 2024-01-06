@@ -16,6 +16,7 @@ String templateProjectOverview(String projectName, String projectDescription,
   <projectDescription>
     $projectDescription
   </projectDescription>
+  <projectCopyrightHolder>$projectCopyrightHolder</projectCopyrightHolder>
   <projectCreationDate>$projectCreationDate</projectCreationDate>
   ''';
 }

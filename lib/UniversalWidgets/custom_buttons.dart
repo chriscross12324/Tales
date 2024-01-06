@@ -389,3 +389,75 @@ class ButtonIcon extends ConsumerWidget {
     );
   }
 }
+
+class ButtonOpenProject extends ConsumerWidget {
+  ButtonOpenProject({super.key});
+
+  final ValueNotifier<bool> _isHovering = ValueNotifier(false);
+  final ValueNotifier<bool> _isPressed = ValueNotifier(false);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeWatcher = ref.watch(app_providers.settingThemeProvider);
+    final theme = app_themes.theme(themeWatcher, ref);
+
+    return Listener(
+      onPointerDown: (_) {
+        _isPressed.value = true;
+      },
+      onPointerUp: (_) {
+        _isPressed.value = false;
+      },
+      onPointerCancel: (_) {
+        _isPressed.value = false;
+      },
+      child: MouseRegion(
+        onEnter: (_) {
+          _isHovering.value = true;
+        },
+        onExit: (_) {
+          _isHovering.value = false;
+        },
+        child: ValueListenableBuilder(
+          valueListenable: _isHovering,
+          builder: (BuildContext context, bool hovered, Widget? child) {
+            return ValueListenableBuilder(
+              valueListenable: _isPressed,
+              builder: (BuildContext context, pressed, _) {
+                Color pressedColour = Color.fromARGB(
+                  SystemTheme.accentColor.accent.alpha,
+                  (SystemTheme.accentColor.accent.red * 0.7).round(),
+                  (SystemTheme.accentColor.accent.green * 0.7).round(),
+                  (SystemTheme.accentColor.accent.blue * 0.7).round(),
+                );
+
+                return AnimatedCustomContainer(
+                  height: 40,
+                  bodyColour: pressed
+                      ? pressedColour
+                      : hovered
+                      ? SystemTheme.accentColor.accent
+                      : theme.fourthOutline,
+                  borderRadiusCustom: const [0, 0, app_constants.borderRadiusM, app_constants.borderRadiusM],
+                  borderRadiusSubtractionCustom: const [0, 0, 0, 0],
+                  duration: const Duration(milliseconds: 250),
+                  child: child,
+                );
+              },
+            );
+          },
+          child: const Center(
+            child: Text(
+              "Open",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:system_theme/system_theme.dart';
 import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 
@@ -8,18 +9,15 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
 
-class DialogMessage extends ConsumerWidget {
-  const DialogMessage(
+class DialogWaiting extends ConsumerWidget {
+  const DialogWaiting(
     this.dialogTitle,
-    this.dialogBody,
-    this.buttonText, {
+    this.dialogBody, {
     super.key,
   });
 
   final String dialogTitle;
   final String dialogBody;
-
-  final String buttonText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -76,18 +74,12 @@ class DialogMessage extends ConsumerWidget {
                   borderRadiusSubtractionCustom: const [0, 0, 2, 2],
                   child: Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Expanded(child: SizedBox()),
-                        GestureDetector(
-                          onTap: () {
-                            ///Close Dialog
-                            Navigator.of(context, rootNavigator: true).pop();
-                          },
-                          child: ButtonDialogPrimary(buttonText: buttonText, buttonWidth: 150,),
-                        ),
-                      ],
-                    ),
+                    child: LinearProgressIndicator(
+                      backgroundColor: theme.thirdBackground,
+                      color: SystemTheme.accentColor.accent,
+                      minHeight: 6,
+                      borderRadius: BorderRadius.circular(3),
+                    )
                   ),
                 ),
               ],
