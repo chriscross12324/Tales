@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:tales/Dialogs/dialog_confirm.dart';
 import 'package:tales/Dialogs/dialog_help.dart';
 import 'package:tales/Dialogs/dialog_new_project.dart';
 import 'package:tales/Dialogs/dialog_settings.dart';
@@ -216,57 +217,90 @@ class ItemProject extends ConsumerWidget {
       bodyColour: theme.thirdBackground,
       borderColour: theme.thirdOutline,
       borderRadius: app_constants.borderRadiusM,
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/logos/logo_placeholder_gray.png",
-                    height: 64,
-                    width: 64,
+          Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/logos/logo_placeholder_gray.png",
+                        height: 64,
+                        width: 64,
+                      ),
+                      const Gap(12),
+                      AutoSizeText(
+                        projectInfo.projectName,
+                        style: TextStyle(color: theme.firstText, fontWeight: FontWeight.bold),
+                        minFontSize: 18,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  const Gap(12),
-                  AutoSizeText(
-                    projectInfo.projectName,
-                    style: TextStyle(color: theme.firstText, fontWeight: FontWeight.bold),
-                    minFontSize: 18,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                ),
+              ),
+              Text(
+                DateFormat('MMM dd, yyyy').format(projectInfo.projectLastModifiedDate),
+                style: TextStyle(color: theme.thirdText, fontWeight: FontWeight.normal),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              const Gap(5),
+              GestureDetector(
+                onTap: () {
+                  openProject(
+                    path.join(
+                      ref.watch(app_providers.settingProjectsPathProvider),
+                      projectInfo.projectName,
+                    ),
+                    context,
+                    ref,
+                  );
+                },
+                child: ButtonOpenProject(),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () {
+                  showStandardDialog(
+                    context,
+                    ref,
+                    DialogConfirm(
+                      "Delete Project",
+                      "Are you sure you want to delete this project? This action cannot be undone.",
+                      "Cancel",
+                      () {
+                        deleteProject(
+                          path.join(
+                            ref.watch(app_providers.settingProjectsPathProvider),
+                            projectInfo.projectName,
+                          ),
+                        );
+                      },
+                      () {},
+                    ),
+                  );
+                },
+                child: ButtonIcon(
+                  buttonIcon: 'assets/icons/icon_trash.svg',
+                  buttonSize: 30,
+                  iconPadding: 5,
+                ),
               ),
             ),
-          ),
-          Text(
-            DateFormat('MMM dd, yyyy').format(projectInfo.projectLastModifiedDate),
-            style: TextStyle(color: theme.thirdText, fontWeight: FontWeight.normal),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          const Gap(5),
-          GestureDetector(
-            onTap: () {
-              showStandardDialog(
-                context,
-                ref,
-                const DialogWaiting(
-                  "Opening",
-                  "Please wait as your project is getting loaded.",
-                ),
-              );
-
-              Future.delayed(const Duration(seconds: 5), () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              });
-            },
-            child: ButtonOpenProject(),
-          ),
+          )
         ],
       ),
     );
@@ -331,4 +365,25 @@ class ProjectInfo {
   final DateTime projectLastModifiedDate;
 
   ProjectInfo(this.projectName, this.projectCreationDate, this.projectLastModifiedDate);
+}
+
+void openProject(String projectPath, BuildContext context, WidgetRef ref) {
+  showStandardDialog(
+    context,
+    ref,
+    const DialogWaiting(
+      "Opening",
+      "Please wait as your project is getting loaded.",
+    ),
+  );
+
+  Future.delayed(const Duration(seconds: 1), () {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    ref.watch(app_providers.currentProjectProvider.notifier).updateState(projectPath);
+  });
+}
+
+void deleteProject(String projectPath) {
+  final projectDirectory = Directory(projectPath);
+  projectDirectory.deleteSync(recursive: true);
 }

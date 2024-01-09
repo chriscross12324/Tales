@@ -390,6 +390,96 @@ class ButtonIcon extends ConsumerWidget {
   }
 }
 
+class ButtonIconAlt extends ConsumerWidget {
+  ButtonIconAlt({super.key, required this.buttonIcon, this.buttonSize = 40.0, this.iconPadding = 0.0});
+
+  final String buttonIcon;
+  final double buttonSize;
+  final double iconPadding;
+  final ValueNotifier<bool> _isHovering = ValueNotifier(false);
+  final ValueNotifier<bool> _isPressed = ValueNotifier(false);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final disableAnimationsWatcher = ref.watch(app_providers.settingDisableAnimationsProvider);
+    final themeWatcher = ref.watch(app_providers.settingDarkThemeProvider);
+    final theme = app_themes.theme(themeWatcher, ref);
+
+    return Listener(
+      onPointerDown: (_) {
+        _isPressed.value = true;
+      },
+      onPointerUp: (_) {
+        _isPressed.value = false;
+      },
+      onPointerCancel: (_) {
+        _isPressed.value = false;
+      },
+      child: MouseRegion(
+        onEnter: (_) {
+          _isHovering.value = true;
+        },
+        onExit: (_) {
+          _isHovering.value = false;
+        },
+        child: ValueListenableBuilder(
+          valueListenable: _isHovering,
+          builder: (BuildContext context, bool hovered, Widget? child) {
+            Color hoveredColour = Color.fromARGB(
+              (theme.firstText.alpha * 0.15).round(),
+              (theme.firstText.red).round(),
+              (theme.firstText.green).round(),
+              (theme.firstText.blue).round(),
+            );
+
+            return ValueListenableBuilder(
+              valueListenable: _isPressed,
+              builder: (BuildContext context, bool pressed, _) {
+                Color pressedColour = Color.fromARGB(
+                  (theme.firstText.alpha * 0.05).round(),
+                  (theme.firstText.red).round(),
+                  (theme.firstText.green).round(),
+                  (theme.firstText.blue).round(),
+                );
+
+                return AnimatedCustomContainer(
+                  height: buttonSize,
+                  width: buttonSize,
+                  bodyColour: pressed
+                      ? pressedColour
+                      : hovered
+                      ? hoveredColour
+                      : Colors.transparent,
+                  borderRadius: app_constants.borderRadiusS,
+                  duration: const Duration(milliseconds: 250),
+                  child: AnimatedScale(
+                    scale: pressed ? 0.85 : 1.0,
+                    duration: Duration(milliseconds: disableAnimationsWatcher ? 0 : 150),
+                    curve: Curves.fastOutSlowIn,
+                    child: child,
+                  ),
+                );
+              },
+            );
+          },
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(iconPadding),
+              child: SvgPicture.asset(
+                buttonIcon,
+                colorFilter: ColorFilter.mode(
+                  theme.secondText,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class ButtonOpenProject extends ConsumerWidget {
   ButtonOpenProject({super.key});
 

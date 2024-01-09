@@ -60,6 +60,7 @@ class TalesApp extends ConsumerWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Nunito'),
       home: Scaffold(
         backgroundColor: theme.firstBackground,
         body: Padding(
