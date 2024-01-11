@@ -6,11 +6,12 @@ import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:tales/Dialogs/dialog_confirm.dart';
+import 'package:tales/Dialogs/dialog_action.dart';
 import 'package:tales/Pages/page_starting.dart';
 import 'package:tales/UniversalWidgets/custom_buttons.dart';
 import 'package:tales/UniversalWidgets/custom_container.dart';
 import 'package:tales/UniversalWidgets/custom_expansion_tile.dart';
+import 'package:tales/UniversalWidgets/custom_list_tile.dart';
 import 'package:tales/UniversalWidgets/resizable_pane.dart';
 
 import 'package:tales/app_providers.dart' as app_providers;
@@ -190,9 +191,10 @@ class NavigationPane extends ConsumerWidget {
                         showStandardDialog(
                           context,
                           ref,
-                          DialogConfirm(
+                          DialogAction(
                             "Exit Project",
                             "You are about to close the project. Are you sure you want to continue?",
+                            "Exit",
                             "Back",
                             () {
                               ref
@@ -206,7 +208,7 @@ class NavigationPane extends ConsumerWidget {
                       child: ButtonIcon(
                         buttonIcon: 'assets/icons/icon_close.svg',
                         buttonSize: 30,
-                        iconPadding: 8,
+                        iconPadding: 7,
                       ),
                     ),
                   )
@@ -275,27 +277,22 @@ class _FolderListState extends ConsumerState<FolderList> {
 
             folder.listSync().forEach((file) {
               if (file is File) {
-                fileWidgets.add(
-                  ListTile(
-                    title: Text(
-                      path.basename(file.path).replaceAll(RegExp(r'\..*'), ''),
-                      style: TextStyle(color: Colors.white),
+                if (file.path.contains('.tale')) {
+                  fileWidgets.add(
+                    CustomListTile(
+                      title: path.basename(file.path).replaceAll(RegExp(r'\..*'), ''),
+                      isChild: true,
                     ),
-                  ),
-                );
+                  );
+                }
               }
             });
 
             folderWidgets.add(
-              CustomExpansionTile(title: path.basename(folder.path),)
-              /*ExpansionTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(
-                  path.basename(folder.path),
-                  style: TextStyle(color: Colors.white),
-                ),
+              CustomExpansionTile(
+                title: path.basename(folder.path),
                 children: fileWidgets,
-              ),*/
+              ),
             );
           }
         });
