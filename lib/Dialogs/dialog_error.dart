@@ -74,7 +74,7 @@ class DialogError extends ConsumerWidget {
                             const Gap(10),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
+                              child: SelectableText(
                                 errorMessage,
                                 style: TextStyle(
                                   color: theme.secondText,

@@ -17,6 +17,7 @@ import 'package:tales/app_providers.dart' as app_providers;
 import 'package:tales/app_templates.dart';
 import 'package:tales/app_themes.dart' as app_themes;
 import 'package:tales/app_constants.dart' as app_constants;
+import 'package:xml/xml.dart';
 
 class DialogNewProject extends ConsumerWidget {
   const DialogNewProject({super.key});
@@ -304,26 +305,51 @@ Future<String?> createProject(String projectLocation, String projectName, String
     return folderCreationResult;
   }
 
-  ///Create Project Sub-Folders
-  for (String subfolderName in templateProjectSubfolders) {
-    String? subFolderCreationResult =
-        await createFolder(path.join(projectLocation, projectName), subfolderName);
-    if (subFolderCreationResult != null) {
-      return subFolderCreationResult;
+  ///Create Project Structure File
+  String? projectStructureResult = await createFile(
+      path.join(projectLocation, projectName), 'config.tale_struct', templateProjectStructureXML());
+  if (projectStructureResult != null) {
+    return projectStructureResult;
+  }
+
+  ///Create Project Files/Folders
+  final document = XmlDocument.parse(templateProjectStructureXML());
+  final entries = document.findAllElements('entry');
+  debugPrint('Length: ${entries.length}');
+  for (var entry in entries) {
+    final type = entry.getAttribute('type');
+    final extension = entry.getAttribute('extension');
+    final name = entry.innerText;
+
+    if (type == 'file') {
+      String? fileResult = await createFile(
+        path.join(projectLocation, projectName),
+        name,
+        templateOverviewXML(
+          projectName,
+          projectDescription,
+          projectCopyrightHolder,
+          DateTime.now().toUtc().toString(),
+        ),
+      );
+      if (fileResult != null) {
+        return fileResult;
+      }
+    } else if (type == 'folder') {
+      String? folderResult = await createFolder(path.join(projectLocation, projectName), name);
+      if (folderResult != null) {
+        return folderResult;
+      }
+
+      String? folderStructResult = await createFile(path.join(projectLocation, projectName, name),
+          'config.tale_struct', templateSubFolderStructureXML(extension!));
+      if (folderStructResult != null) {
+        return folderStructResult;
+      }
     }
   }
 
-  ///Create Project Overview File
-  return await createFile(
-    path.join(projectLocation, projectName),
-    "Overview$fileTypeOverview",
-    templateProjectOverview(
-      projectName,
-      projectDescription,
-      projectCopyrightHolder,
-      DateTime.now().toUtc().toString(),
-    ),
-  );
+  return null;
 }
 
 Future<String?> createFolder(String folderPath, String folderName) async {
@@ -336,7 +362,7 @@ Future<String?> createFolder(String folderPath, String folderName) async {
       await projectFolder.create(recursive: true);
       return null;
     } catch (e) {
-      return e.toString();
+      return 'Folder Creation: ${e.toString()}';
     }
   }
   return "The requested folder already exists: createFolder($folderPath, $folderName)";
@@ -347,12 +373,16 @@ Future<String?> createFile(String filePath, String fileName, String? fileContent
   final projectFile = File(path.join(filePath, fileName));
 
   if (!(await projectFile.exists())) {
-    if (fileContent == null) {
-      projectFile.create();
-    } else {
-      projectFile.writeAsStringSync(fileContent);
+    try {
+      if (fileContent == null) {
+        projectFile.create();
+      } else {
+        projectFile.writeAsStringSync(fileContent);
+      }
+      return null;
+    } catch (e) {
+      return 'File Creation: ${e.toString()}';
     }
-    return null;
   }
   return "The requested file already exists: createFile($filePath, $fileName, ...)";
 }
